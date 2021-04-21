@@ -1,6 +1,7 @@
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.template import loader
+from django.contrib import messages
 from .forms import RegisterForm
 
 
@@ -10,17 +11,19 @@ def index(request):
     return HttpResponse(template.render(context, request))
 
 
-def register(response):
-    if response.method == "POST":
-        form = RegisterForm(response.POST)
+def register(request):
+    if request.method == "POST":
+        form = RegisterForm(request.POST)
         if form.is_valid():
             form.save()
-
-        return redirect("/")
+            messages.info(request, "Account created successfully, please log in.")
+            return redirect(login)
+        else:
+            messages.error(request, "Account cannot be created, some problem occurred.")
     else:
         form = RegisterForm()
 
-        return render(response, "register.html", {"form": form})
+    return render(request, "register.html", {"form": form})
 
 
 def login(request):
