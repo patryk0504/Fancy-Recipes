@@ -1,10 +1,8 @@
-import psycopg2
 from django.db import models
 from django.contrib.auth.models import User
-from datetime import datetime
+
 
 class Account(models.Model):
-
     ACCOUNT_TYPES = [("U", 'user'), ("A", 'admin'), ("C", 'cook')]
 
     user = models.OneToOneField(User, on_delete = models.CASCADE)
