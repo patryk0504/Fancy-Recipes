@@ -45,6 +45,11 @@
     </div>
   </div>
 </nav>
+{% if messages %}
+  {% for message in messages %}
+    <div style="text-align: center">{{ message }}</div></br>
+  {% endfor %}
+{% endif %}
 {% block body %}{% endblock %}
 </div>
 </html>
