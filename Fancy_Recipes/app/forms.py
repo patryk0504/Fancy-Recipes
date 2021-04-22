@@ -10,14 +10,12 @@ class RegisterForm(UserCreationForm):
         model = User
         fields = ["username", "email", "password1", "password2"]
 
-class UsernameUpdateForm(forms.ModelForm):
-    class Meta:
-        model = User
-        fields = ['username']
-
-class EmailUpdateForm(forms.ModelForm):
-    email = forms.EmailField()
+class ProfileUpdateForm(forms.ModelForm):
+    full_name = forms.CharField(required=False)
+    username = forms.CharField(required=False)
+    email = forms.EmailField(required=False)
+    about = forms.CharField(widget=forms.Textarea, help_text='400 characters max.', max_length=400, required=False)
 
     class Meta:
         model = User
-        fields = ['email']
+        fields = ['full_name','username', 'email', 'about']

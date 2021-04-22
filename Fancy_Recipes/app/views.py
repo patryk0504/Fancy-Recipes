@@ -2,7 +2,8 @@ from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.template import loader
 from django.contrib import messages
-from .forms import RegisterForm, UsernameUpdateForm, EmailUpdateForm
+from .forms import RegisterForm, ProfileUpdateForm
+from django.contrib.auth.decorators import  login_required
 
 
 def index(request):
@@ -31,17 +32,28 @@ def login(request):
     context = {}
     return HttpResponse(template.render(context, request))
 
+@login_required
 def profile(request):
     template = loader.get_template('profile.html')
-    username_form = UsernameUpdateForm()
-    email_form = EmailUpdateForm()
-
-
     context = {
-        'username_form' : username_form,
-        'email_form' : email_form,
         # placeholders
-        'role' : 'tmpRole',
-        'join_date' : '11-11-2021'
+        'role' : 'cook',
+        'join_date' : '11-11-2021',
+        'full_name' : 'Kenneth Valdez',
+        'email' : 'user12345@gmail.com',
+        'phone' : '500 155 155',
+        'job' : 'McDonalds',
+        'about_me' : 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi dictum ac lectus id efficitur',
     }
     return HttpResponse(template.render(context, request))
+
+@login_required
+def updateProfile(request):
+    template = loader.get_template('updateProfile.html')
+    profile_form = ProfileUpdateForm()
+    context = {
+        'profile_form' : profile_form,
+        'join_date': '11-11-2021',
+        'full_name': 'Kenneth Valdez',
+    }
+    return HttpResponse(template.render(context,request))
