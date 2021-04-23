@@ -15,7 +15,7 @@
                         <h4>user12345</h4>
                         <p class="text-secondary">{{ email }}</p>
                         <p class="text-muted font-size-sm">Data dołączenia: {{ join_date }}</p>
-                        <input type="button" class="btn btn-primary" onclick="location.href='{% url 'updateProfile' %}';" value="Edytuj profil" />
+                        <input type="button" class="btn btn-primary" onclick="location.href='{% url 'updateProfile' %}'" value="Edytuj profil" />
 
                     </div>
                   </div>
@@ -26,7 +26,7 @@
                     <li class="list-group-item list-group-item-light"><a class="nav-link" href="#">Stworzone przez ciebie</a></li>
                     <li class="list-group-item list-group-item-light"><a class="nav-link" href="#">Dodaj nowy przepis</a></li>
                     <li class="list-group-item list-group-item-light"><a class="nav-link" href="#">Ulubione przepisy</a></li>
-                    <li class="list-group-item list-group-item-light"><a class="nav-link" style="color: #ff0000" href="#">Usuń konto</a></li>
+                    <li class="list-group-item list-group-item-light"><a class="nav-link" style="color: #ff0000" href="{% url 'deleteProfile' %}">Usuń konto</a></li>
                 </ul>
               </div>
             </div>

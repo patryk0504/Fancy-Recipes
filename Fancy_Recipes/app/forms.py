@@ -19,3 +19,9 @@ class ProfileUpdateForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ['full_name','username', 'email', 'about']
+
+
+class ProfileDeleteForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = []   #Form has only submit button.  Empty "fields" list still necessary, though.

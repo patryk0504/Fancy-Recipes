@@ -2,7 +2,7 @@ from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.template import loader
 from django.contrib import messages
-from .forms import RegisterForm, ProfileUpdateForm
+from .forms import RegisterForm, ProfileUpdateForm, ProfileDeleteForm
 from django.contrib.auth.decorators import  login_required
 
 
@@ -55,5 +55,14 @@ def updateProfile(request):
         'profile_form' : profile_form,
         'join_date': '11-11-2021',
         'full_name': 'Kenneth Valdez',
+    }
+    return HttpResponse(template.render(context,request))
+
+@login_required
+def deleteProfile(request):
+    template = loader.get_template('deleteProfile.html')
+    delete_form = ProfileDeleteForm()
+    context = {
+        'delete_form' : delete_form
     }
     return HttpResponse(template.render(context,request))
