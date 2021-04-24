@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block body %}
+    <style>
+        table {
+            font-family: arial, sans-serif;
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        td, th {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+        }
+
+        tr:nth-child(even) {
+            background-color: #dddddd;
+        }
+    </style>
+    <table>
+        <tr>
+            <th>Id</th>
+            <th>Name</th>
+            <th>Price</th>
+        </tr>
+        {% for ingredient in ingredients %}
+            <tr>
+                <td>{{ ingredient.id }}</td>
+                <td>{{ ingredient.name }}</td>
+                <td> {{ ingredient.price }}$</td>
+            </tr>
+        {% endfor %}
+    </table>
+{% endblock %}
