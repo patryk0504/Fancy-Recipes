@@ -19,7 +19,7 @@ def register(request):
         if form.is_valid():
             form.save()
             messages.info(request, "Account created successfully, please log in.")
-            return redirect(login)
+            return redirect('login')
         else:
             messages.error(request, "Account cannot be created, some problem occurred.")
     else:
@@ -76,3 +76,4 @@ class IngredientListView(ListView):
     template_name = 'list_ingredient.html'  # <app>/<model>_<viewtype>.html
     context_object_name = 'ingredients'
     ordering = ['price']  # sortowanie po najnizszej
+
