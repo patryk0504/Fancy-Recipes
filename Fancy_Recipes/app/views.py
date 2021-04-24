@@ -35,7 +35,6 @@ def login(request):
 
 
 def create_ingredient(request):
-    """Dodaje składnik do bazy danych - formularz dostepny pod routingiem .../ingredient/create/"""
     if request.method == "POST":
         form = CreateIngredientForm(request.POST)
         if form.is_valid():
@@ -51,7 +50,6 @@ def create_ingredient(request):
 
 
 def delete_ingredient(request):
-    """Usuwa składnik z bazy danych - formularz dostepny pod routingiem .../ingredient/delete"""
     if request.method == "POST":
         form = DeleteIngredientForm(request.POST)
 
@@ -73,7 +71,6 @@ def delete_ingredient(request):
 
 
 def list_ingredients(request):
-    """Pomocnicza funkcja do wyswietlenia listy skladnikow pod routingiem .../ingredient/list"""
     context = {
         'ingredients': Ingredient.objects.all()
     }
