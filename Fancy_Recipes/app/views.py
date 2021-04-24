@@ -40,10 +40,13 @@ def profile(request):
         'role' : 'cook',
         'join_date' : '11-11-2021',
         'full_name' : 'Kenneth Valdez',
-        'email' : 'user12345@gmail.com',
         'phone' : '500 155 155',
         'job' : 'McDonalds',
         'about_me' : 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi dictum ac lectus id efficitur',
+        'stats' : {'recipes_num' : 10,
+                   'comments_num' : 20,
+                   'likes' : 30
+                   },
     }
     return HttpResponse(template.render(context, request))
 
