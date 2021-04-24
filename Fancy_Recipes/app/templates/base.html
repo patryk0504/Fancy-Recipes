@@ -43,7 +43,7 @@
         <button class="btn btn-outline-success" type="submit">Search</button>
         </form>
         <li class="nav-item">
-          <a class="nav-link" href="#">Wyloguj</a>
+          <a class="nav-link" href="{% url 'logout' %}">Wyloguj</a>
         </li>
         {% else %}
         <li class="nav-item">
@@ -57,6 +57,11 @@
     </div>
   </div>
 </nav>
+{% if messages %}
+  {% for message in messages %}
+    <div style="text-align: center">{{ message }}</div></br>
+  {% endfor %}
+{% endif %}
 {% block body %}{% endblock %}
 </div>
 </html>
