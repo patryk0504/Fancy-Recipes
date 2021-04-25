@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block body %}
+    <form method="POST" class="form-group">
+        {% csrf_token %}
+        <label for="name">Ingredient name:</label><br>
+        <input type="text" id="name" name="name"><br>
+        <label for="price">Ingredient price:</label><br>
+        <input type="text" id="price" name="price"><br>
+        <button type="submit" class="btn btn-success">Delete Ingredient</button>
+    </form>
+{% endblock %}

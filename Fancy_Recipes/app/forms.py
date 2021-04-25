@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
+from . models import Ingredient
 
 
 class RegisterForm(UserCreationForm):
@@ -25,3 +26,14 @@ class ProfileDeleteForm(forms.ModelForm):
     class Meta:
         model = User
         fields = []   #Form has only submit button.  Empty "fields" list still necessary, though.
+
+class CreateIngredientForm(forms.ModelForm):
+    class Meta:
+        model = Ingredient
+        fields = ["name", "price"]
+
+
+class DeleteIngredientForm(forms.ModelForm):
+    class Meta:
+        model = Ingredient
+        fields = ["name", "price"]
