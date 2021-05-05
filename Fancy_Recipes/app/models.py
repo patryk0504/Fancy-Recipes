@@ -10,7 +10,7 @@ class Account(models.Model):
     join_date = models.DateField(auto_now_add = True, blank = True)
     role = models.CharField(max_length = 1, choices = ACCOUNT_TYPES, default = "U")
 
-
+# all fields are calculated based on 100g of product
 class Ingredient(models.Model):
     name = models.CharField(max_length = 200, blank = False)
 
