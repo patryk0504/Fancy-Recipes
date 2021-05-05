@@ -38,3 +38,14 @@ class Comment(models.Model):
     author = models.ForeignKey(Account, on_delete = models.CASCADE)
     recipe = models.ForeignKey(Recipe, on_delete = models.CASCADE)
     text = models.TextField(blank = False)
+
+# main unit = 1 ml
+class LiquidUnits(models.Model):
+    unit = models.CharField(max_length = 10, blank = False)
+    conversionFactorToMainUnit = models.FloatField()
+
+# main unit = 1 g
+class SolidUnits(models.Model):
+    unit = models.CharField(max_length = 10, blank = False)
+    conversionFactorToMainUnit = models.FloatField()
+
