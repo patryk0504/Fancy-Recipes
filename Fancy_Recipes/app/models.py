@@ -32,7 +32,7 @@ class Recipe(models.Model):
     description = models.CharField(max_length=10000, blank=False)
     add_date = models.DateField(auto_now_add=True, blank=True)
     author = models.ForeignKey(User, on_delete=models.CASCADE)
-    #ingredients = models.ManyToManyField(Ingredient)
+    ingredients = models.ManyToManyField(Ingredient)
 
 
 class Comment(models.Model):

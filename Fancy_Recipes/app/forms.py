@@ -44,5 +44,5 @@ class DeleteIngredientForm(forms.ModelForm):
 class RecipeForm(forms.ModelForm):
     class Meta:
         model = Recipe
-        fields = ["name", "description", "add_date", "author"]
+        fields = ["name", "description", "add_date", "author", "ingredients"]
         exclude = ["author", "add_date"]
