@@ -2,11 +2,13 @@ from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.template import loader
 from django.contrib import messages
-from django.contrib.auth.decorators import  login_required
+from django.contrib.auth.decorators import login_required
 from django.views.generic import ListView
-from .models import Ingredient, Recipe
+from .models import Ingredient, Recipe, Account
 from .forms import (RegisterForm, ProfileUpdateForm, ProfileDeleteForm,
-                    CreateIngredientForm, DeleteIngredientForm, CreateRecipeForm)
+                    CreateIngredientForm, DeleteIngredientForm, RecipeForm)
+from datetime import datetime
+from django.contrib.auth.models import User
 
 
 def index(request):
@@ -35,29 +37,30 @@ def profile(request):
     template = loader.get_template('profile.html')
     context = {
         # placeholders
-        'role' : 'cook',
-        'join_date' : '11-11-2021',
-        'full_name' : 'Kenneth Valdez',
-        'phone' : '500 155 155',
-        'job' : 'McDonalds',
-        'about_me' : 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi dictum ac lectus id efficitur',
-        'stats' : {'recipes_num' : 10,
-                   'comments_num' : 20,
-                   'likes' : 30
-                   },
+        'role': 'cook',
+        'join_date': '11-11-2021',
+        'full_name': 'Kenneth Valdez',
+        'phone': '500 155 155',
+        'job': 'McDonalds',
+        'about_me': 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi dictum ac lectus id efficitur',
+        'stats': {'recipes_num': 10,
+                  'comments_num': 20,
+                  'likes': 30
+                  },
     }
     return HttpResponse(template.render(context, request))
+
 
 @login_required
 def updateProfile(request):
     template = loader.get_template('updateProfile.html')
     profile_form = ProfileUpdateForm()
     context = {
-        'profile_form' : profile_form,
+        'profile_form': profile_form,
         'join_date': '11-11-2021',
         'full_name': 'Kenneth Valdez',
     }
-    return HttpResponse(template.render(context,request))
+    return HttpResponse(template.render(context, request))
 
 
 @login_required
@@ -65,9 +68,9 @@ def deleteProfile(request):
     template = loader.get_template('deleteProfile.html')
     delete_form = ProfileDeleteForm()
     context = {
-        'delete_form' : delete_form
+        'delete_form': delete_form
     }
-    return HttpResponse(template.render(context,request))
+    return HttpResponse(template.render(context, request))
 
 
 def create_ingredient(request):
@@ -123,13 +126,16 @@ class IngredientListView(ListView):
 @login_required
 def add_recipe(request):
     if request.method == "POST":
-        form = CreateRecipeForm(request.POST)
+        current_user = User.objects.get(id=request.user.id)
+        new_recipe = Recipe(add_date=datetime.now(), author=current_user)
+        form = RecipeForm(request.POST, instance=new_recipe)
+
         if form.is_valid():
             form.save()
             messages.info(request, "Receipe successfully added to the database.")
             return redirect('.')
     else:
-        form = CreateRecipeForm()
+        form = RecipeForm()
 
     return render(request, 'add_recipe.html', {'form': form})
 
@@ -144,6 +150,3 @@ def list_recipe(request):
 def edit_recipe(request):
     if request.method == "GET":
         pass
-
-
-
