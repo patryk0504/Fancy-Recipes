@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block body %}
+{% load static %}
+
+<!--<link rel="stylesheet" type="text/css" href="{% static 'css/ingredient_list.css' %}">-->
+<table class="table">
+    <tr>
+        <th>Name</th>
+        <th>Added</th>
+        <th>Author</th>
+        <th class="col-3">Description</th>
+        <th>Ingredients</th>
+<!--        name = models.CharField(max_length=50, blank=False)-->
+<!--    description = models.CharField(max_length=10000, blank=False)-->
+<!--    text = models.TextField(blank=False)-->
+<!--    add_date = models.DateField(auto_now_add=True, blank=True)-->
+<!--    author = models.ForeignKey(Account, on_delete=models.CASCADE)-->
+<!--    ingredients = models.ManyToManyField(Ingredient)-->
+    </tr>
+    {% for recipe in recipes %}
+    <tr>
+        <td>{{ recipe.name }}</td>
+        <td> {{ recipe.add_date }}$</td>
+        <td> {{ recipe.author }}$</td>
+        <td>{{ recipe.description }}</td>
+        <td> {{ recipe.ingredients }}$</td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}
