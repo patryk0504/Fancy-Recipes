@@ -129,6 +129,7 @@ def add_recipe(request):
         current_user = User.objects.get(id=request.user.id)
         new_recipe = Recipe(add_date=datetime.now(), author=current_user)
         form = RecipeForm(request.POST, instance=new_recipe)
+
         if form.is_valid():
             form.save()
             messages.info(request, "Receipe successfully added to the database.")
@@ -165,4 +166,8 @@ def delete_recipe(request, recipe_id):
 
         return redirect('index')
 
-
+@login_required
+def recipe_page(request, recipe_id):
+    if request.method == "GET":
+        recipe = Recipe.objects.get(id=recipe_id)
+        return render(request, 'recipe_page.html', {'recipe': recipe})
