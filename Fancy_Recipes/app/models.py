@@ -10,6 +10,7 @@ class Account(models.Model):
     join_date = models.DateField(auto_now_add = True, blank = True)
     role = models.CharField(max_length = 1, choices = ACCOUNT_TYPES, default = "U")
 
+
 # all fields are calculated based on 100g of product
 class Ingredient(models.Model):
     name = models.CharField(max_length = 200, blank = False)
@@ -27,12 +28,15 @@ class Ingredient(models.Model):
 
     price = models.DecimalField(max_digits = 5, decimal_places = 2)
 
+
 class Recipe(models.Model):
-    name = models.CharField(max_length = 50, blank = False)
-    text = models.TextField(blank = False)
-    add_date = models.DateField(auto_now_add = True, blank = True)
-    author = models.ForeignKey(Account, on_delete = models.CASCADE)
+    name = models.CharField(max_length=50, blank=False)
+    description = models.CharField(max_length=10000, blank=False)
+    text = models.TextField(blank=False)
+    add_date = models.DateField(auto_now_add=True, blank=True)
+    author = models.ForeignKey(Account, on_delete=models.CASCADE)
     ingredients = models.ManyToManyField(Ingredient)
+
 
 class Comment(models.Model):
     author = models.ForeignKey(Account, on_delete = models.CASCADE)

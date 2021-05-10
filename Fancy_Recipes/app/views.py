@@ -5,8 +5,8 @@ from django.contrib import messages
 from django.contrib.auth.decorators import  login_required
 from django.views.generic import ListView
 from .models import Ingredient
-from .forms import RegisterForm, ProfileUpdateForm, ProfileDeleteForm, CreateIngredientForm, DeleteIngredientForm
-
+from .forms import (RegisterForm, ProfileUpdateForm, ProfileDeleteForm,
+                    CreateIngredientForm, DeleteIngredientForm, CreateReceipeForm)
 
 
 def index(request):
@@ -58,6 +58,7 @@ def updateProfile(request):
         'full_name': 'Kenneth Valdez',
     }
     return HttpResponse(template.render(context,request))
+
 
 @login_required
 def deleteProfile(request):
@@ -118,3 +119,12 @@ class IngredientListView(ListView):
     context_object_name = 'ingredients'
     ordering = ['price']  # sortowanie po najnizszej
 
+
+@login_required
+def add_receipt(request):
+    if request.method == "POST":
+        form = CreateReceipeForm(request.POST)
+    else:
+        form = CreateReceipeForm()
+
+    return render(request, 'add_receipt.html', {'form': form})
