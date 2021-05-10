@@ -138,3 +138,12 @@ def add_recipe(request):
 def list_recipe(request):
     if request.method == "GET":
         return render(request, 'list_recipe.html', {'recipes': Recipe.objects.all()})
+
+
+@login_required
+def edit_recipe(request):
+    if request.method == "GET":
+        pass
+
+
+

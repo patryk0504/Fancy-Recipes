@@ -32,7 +32,6 @@ class Ingredient(models.Model):
 class Recipe(models.Model):
     name = models.CharField(max_length=50, blank=False)
     description = models.CharField(max_length=10000, blank=False)
-    text = models.TextField(blank=False)
     add_date = models.DateField(auto_now_add=True, blank=True)
     author = models.ForeignKey(Account, on_delete=models.CASCADE)
     ingredients = models.ManyToManyField(Ingredient)

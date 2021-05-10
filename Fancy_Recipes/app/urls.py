@@ -18,6 +18,7 @@ urlpatterns = [
     path('ingredient/list/', IngredientListView.as_view(), name='ingredient-list'),
 
     path('recipe/add/', views.add_recipe, name='recipe-add'),
-    path('recipe/list/', views.list_recipe, name='recipe-list')
+    path('recipe/list/', views.list_recipe, name='recipe-list'),
+    path('recipe/edit/', views.edit_recipe, name='edit-recipe')
 
 ]
