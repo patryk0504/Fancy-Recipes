@@ -4,9 +4,9 @@ from django.template import loader
 from django.contrib import messages
 from django.contrib.auth.decorators import  login_required
 from django.views.generic import ListView
-from .models import Ingredient
+from .models import Ingredient, Recipe
 from .forms import (RegisterForm, ProfileUpdateForm, ProfileDeleteForm,
-                    CreateIngredientForm, DeleteIngredientForm, CreateReceipeForm)
+                    CreateIngredientForm, DeleteIngredientForm, CreateRecipeForm)
 
 
 def index(request):
@@ -121,10 +121,23 @@ class IngredientListView(ListView):
 
 
 @login_required
-def add_receipt(request):
+def add_recipe(request):
     if request.method == "POST":
-        form = CreateReceipeForm(request.POST)
+        form = CreateRecipeForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.info(request, "Receipe successfully added to the database.")
+            return redirect('.')
     else:
-        form = CreateReceipeForm()
+        form = CreateRecipeForm()
 
-    return render(request, 'add_receipt.html', {'form': form})
+    return render(request, 'add_receipe.html', {'form': form})
+
+
+@login_required
+def list_recipe(request):
+    if request.method == "GET":
+        context = {
+            'recipes': Recipe.objects.all()
+        }
+        return render(request, 'list_ingredient.html', context)

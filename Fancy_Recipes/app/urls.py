@@ -15,6 +15,9 @@ urlpatterns = [
     path('logout/', auth_views.LogoutView.as_view(template_name='logout.html'), name = "logout"),
     path('ingredient/create/', views.create_ingredient, name='ingredient-create'),
     path('ingredient/delete/', views.delete_ingredient, name='ingredient-delete'),
-    path('ingredient/list/', IngredientListView.as_view(), name='ingredient-list')
+    path('ingredient/list/', IngredientListView.as_view(), name='ingredient-list'),
+
+    path('recipe/add/', views.add_recipe, name='recipe-add'),
+    path('recipe/list/', views.list_recipe, name='recipe-list')
 
 ]
