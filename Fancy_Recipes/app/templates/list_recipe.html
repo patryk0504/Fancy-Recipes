@@ -4,29 +4,35 @@
 {% block body %}
 {% load static %}
 
-<!--<link rel="stylesheet" type="text/css" href="{% static 'css/ingredient_list.css' %}">-->
-<table class="table">
-    <tr>
-        <th>Name</th>
-        <th>Added</th>
-        <th>Author</th>
-        <th class="col-3">Description</th>
-        <th>Ingredients</th>
-<!--        name = models.CharField(max_length=50, blank=False)-->
-<!--    description = models.CharField(max_length=10000, blank=False)-->
-<!--    text = models.TextField(blank=False)-->
-<!--    add_date = models.DateField(auto_now_add=True, blank=True)-->
-<!--    author = models.ForeignKey(Account, on_delete=models.CASCADE)-->
-<!--    ingredients = models.ManyToManyField(Ingredient)-->
-    </tr>
-    {% for recipe in recipes %}
-    <tr>
-        <td>{{ recipe.name }}</td>
-        <td> {{ recipe.add_date }}$</td>
-        <td> {{ recipe.author }}$</td>
-        <td>{{ recipe.description }}</td>
-        <td> {{ recipe.ingredients }}$</td>
-    </tr>
-    {% endfor %}
+<!--<div class="container row" style="margin-left: 1px">-->
+<!--                <div class="col-md-4 bg-primary text-white"><h3>Name:</h3></div>-->
+<!--                <div class="col-md-4 bg-primary text-white"><h3>Added:</h3></div>-->
+<!--                <div class="col-md-4 bg-primary text-white"><h3>Author:</h3></div>-->
+<!--                {% for recipe in recipes %}-->
+<!--                <a href="{% url 'recipe_page' recipe_id=9 %}">-->
+<!--                    <div class="col-md-4 bg-light border-bottom"><h3> {{ recipe.name }}</h3></div>-->
+<!--                    <div class="col-md-4 bg-light border-bottom"><h3> {{ recipe.add_date }}</h3></div>-->
+<!--                    <div class="col-md-4 bg-light border-bottom"><h3> {{ recipe.author }}</h3></div>-->
+<!--                </a>-->
+
+<!--                {% endfor %}-->
+<!--</div>-->
+<table class="table table-striped">
+    <thead class="thead-dark">
+        <tr>
+            <th scope="col">Name</th>
+            <th scope="col">Added</th>
+            <th scope="col">Author</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for recipe in recipes %}
+        <tr class='clickable-row' onclick="window.location='{% url 'recipe_page' recipe_id=9 %}'" style="cursor: pointer">
+            <td>{{ recipe.name }}</td>
+            <td>{{ recipe.add_date }}</td>
+            <td> {{ recipe.author }}$</td>
+        </tr>
+        {% endfor %}
+    </tbody>
 </table>
 {% endblock %}

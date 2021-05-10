@@ -150,3 +150,9 @@ def list_recipe(request):
 def edit_recipe(request):
     if request.method == "GET":
         pass
+
+@login_required
+def recipe_page(request, recipe_id):
+    if request.method == "GET":
+        recipe = Recipe.objects.get(id=recipe_id)
+        return render(request, 'recipe_page.html', {'recipe': recipe})
