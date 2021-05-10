@@ -131,13 +131,10 @@ def add_recipe(request):
     else:
         form = CreateRecipeForm()
 
-    return render(request, 'add_receipe.html', {'form': form})
+    return render(request, 'add_recipe.html', {'form': form})
 
 
 @login_required
 def list_recipe(request):
     if request.method == "GET":
-        context = {
-            'recipes': Recipe.objects.all()
-        }
-        return render(request, 'list_ingredient.html', context)
+        return render(request, 'list_recipe.html', {'recipes': Recipe.objects.all()})
