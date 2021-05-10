@@ -129,7 +129,6 @@ def add_recipe(request):
         current_user = User.objects.get(id=request.user.id)
         new_recipe = Recipe(add_date=datetime.now(), author=current_user)
         form = RecipeForm(request.POST, instance=new_recipe)
-
         if form.is_valid():
             form.save()
             messages.info(request, "Receipe successfully added to the database.")
@@ -150,3 +149,20 @@ def list_recipe(request):
 def edit_recipe(request):
     if request.method == "GET":
         pass
+
+
+@login_required
+def delete_recipe(request, recipe_id):
+    if request.method == "GET":
+        instance = Recipe.objects.get(id=recipe_id)
+        recipe_author = instance.author
+        if recipe_author.id == request.user.id:
+            instance.delete()
+            messages.info(request, f"Recipe with id {recipe_id} deleted successfully.")
+            return redirect('index')
+        else:
+            messages.error(request, "You have no permission to do that action.")
+
+        return redirect('index')
+
+
