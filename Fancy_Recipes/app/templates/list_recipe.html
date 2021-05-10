@@ -4,19 +4,11 @@
 {% block body %}
 {% load static %}
 
-<!--<div class="container row" style="margin-left: 1px">-->
-<!--                <div class="col-md-4 bg-primary text-white"><h3>Name:</h3></div>-->
-<!--                <div class="col-md-4 bg-primary text-white"><h3>Added:</h3></div>-->
-<!--                <div class="col-md-4 bg-primary text-white"><h3>Author:</h3></div>-->
-<!--                {% for recipe in recipes %}-->
-<!--                <a href="{% url 'recipe_page' recipe_id=9 %}">-->
-<!--                    <div class="col-md-4 bg-light border-bottom"><h3> {{ recipe.name }}</h3></div>-->
-<!--                    <div class="col-md-4 bg-light border-bottom"><h3> {{ recipe.add_date }}</h3></div>-->
-<!--                    <div class="col-md-4 bg-light border-bottom"><h3> {{ recipe.author }}</h3></div>-->
-<!--                </a>-->
-
-<!--                {% endfor %}-->
-<!--</div>-->
+<style>
+    #row:hover {
+        background-color: darkgray;
+    }
+</style>
 <table class="table table-striped">
     <thead class="thead-dark">
         <tr>
@@ -27,7 +19,7 @@
     </thead>
     <tbody>
         {% for recipe in recipes %}
-        <tr class='clickable-row' onclick="window.location='{% url 'recipe_page' recipe_id=9 %}'" style="cursor: pointer">
+        <tr id="row" class='clickable-row' onclick="window.location='{% url 'recipe_page' recipe_id=recipe.id %}'" style="cursor: pointer">
             <td>{{ recipe.name }}</td>
             <td>{{ recipe.add_date }}</td>
             <td> {{ recipe.author }}$</td>
