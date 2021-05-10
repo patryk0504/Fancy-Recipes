@@ -20,5 +20,21 @@
               <li class="list-group-item bg-light"> - {{ ingredient.name }} Carbohydrate: {{ ingredient.carbohydrate }} Protein: {{ ingredient.protein }} Fat: {{ ingredient.fat }} Energy: {{ ingredient.energy }} Price: {{ ingredient.price }}</li>
       {% endfor %}
     </ul>
+
+<!--    <div className="row row-cols-3 mb-2">-->
+<!--        {% for comment in recipe.comments.all %}-->
+<!--            <div-->
+<!--                className="card text-white bg-primary ml-auto mr-auto mb-3"-->
+<!--                style="maxWidth: 32%"-->
+<!--            >-->
+<!--                <div className="card-header d-flex justify-content-between">-->
+<!--                    <span>{{ comment.author }}</span>-->
+<!--                </div>-->
+<!--                <div className="card-body">-->
+<!--                    <p className="card-text">{{ comment.text }}</p>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        {% endfor %}-->
+<!--    </div>-->
 </div>
 {% endblock %}
