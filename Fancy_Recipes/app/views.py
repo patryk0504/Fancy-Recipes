@@ -4,6 +4,8 @@ from django.template import loader
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.views.generic import ListView
+from django.http import HttpResponseNotFound
+
 from .models import Ingredient, Recipe, Account
 from .forms import (RegisterForm, ProfileUpdateForm, ProfileDeleteForm,
                     CreateIngredientForm, DeleteIngredientForm, RecipeForm)
@@ -147,15 +149,31 @@ def list_recipe(request):
 
 
 @login_required
-def edit_recipe(request):
+def edit_recipe(request, recipe_id):
     if request.method == "GET":
-        pass
+        instance = Recipe.objects.filter(id=recipe_id).first()
+        if not instance:
+            messages.error(request, f"Not found recipe with id={recipe_id}.")
+            return redirect('index')
+        recipe_author = instance.author
+        if recipe_author.id == request.user.id:
+            #TODO Obsługa edycji
+            pass
+        else:
+            messages.error(request, "You have no permission to do that action.")
+            return redirect('recipe_page', recipe_id)
+
+    return redirect('recipe_page', recipe_id)
 
 
 @login_required
-def delete_recipe(request, recipe_id):
-    if request.method == "GET":
-        instance = Recipe.objects.get(id=recipe_id)
+def recipe_delete(request, recipe_id):
+    if request.method == "POST":
+        instance = Recipe.objects.filter(id=recipe_id).first()
+        if not instance:
+            messages.error(request, f"Not found recipe with id={recipe_id}.")
+            return redirect('index')
+
         recipe_author = instance.author
         if recipe_author.id == request.user.id:
             instance.delete()
@@ -163,11 +181,16 @@ def delete_recipe(request, recipe_id):
             return redirect('index')
         else:
             messages.error(request, "You have no permission to do that action.")
+            return redirect('recipe_page', recipe_id)
 
-        return redirect('index')
 
 @login_required
 def recipe_page(request, recipe_id):
     if request.method == "GET":
-        recipe = Recipe.objects.get(id=recipe_id)
-        return render(request, 'recipe_page.html', {'recipe': recipe})
+        instance = Recipe.objects.filter(id=recipe_id).first()
+        if instance:
+            return render(request, 'recipe_page.html', {'recipe': instance})
+        else:
+            messages.error(request, f"Not found recipe with id={recipe_id}.")
+            return redirect('recipe_list')
+
