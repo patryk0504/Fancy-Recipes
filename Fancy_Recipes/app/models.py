@@ -39,7 +39,7 @@ class Comment(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
     text = models.TextField(blank=False)
-    last_edited = models.DateField(auto_now_add=True, blank=True)
+    # last_edited = models.DateField(auto_now_add=True, blank=True)
 
 
 # main unit = 1 ml
