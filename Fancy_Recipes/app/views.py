@@ -6,7 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.views.generic import ListView
 from django.http import HttpResponseNotFound
 
-from .models import Ingredient, Recipe, Account
+from .models import Ingredient, Recipe, Account, Comment
 from .forms import (RegisterForm, ProfileUpdateForm, ProfileDeleteForm,
                     CreateIngredientForm, DeleteIngredientForm, RecipeForm)
 from datetime import datetime
@@ -189,7 +189,8 @@ def recipe_page(request, recipe_id):
     if request.method == "GET":
         instance = Recipe.objects.filter(id=recipe_id).first()
         if instance:
-            return render(request, 'recipe_page.html', {'recipe': instance})
+            comments = Comment.objects.filter(recipe_id = recipe_id).all()
+            return render(request, 'recipe_page.html', {'recipe': instance, 'comments': comments})
         else:
             messages.error(request, f"Not found recipe with id={recipe_id}.")
             return redirect('recipe_list')
