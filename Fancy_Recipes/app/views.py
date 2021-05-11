@@ -194,3 +194,7 @@ def recipe_page(request, recipe_id):
             messages.error(request, f"Not found recipe with id={recipe_id}.")
             return redirect('recipe_list')
 
+
+def list_users(request):
+    if(request.method == "GET"):
+        return render(request, 'users.html', {'users': Account.objects.all()})
