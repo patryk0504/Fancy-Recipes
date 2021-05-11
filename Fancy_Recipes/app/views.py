@@ -211,3 +211,21 @@ def add_comment(request, recipe_id):
         form = CommentForm()
 
     return render(request, 'add_comment.html', {'form': form})
+
+
+@login_required
+def comment_delete(request, comment_id):
+    if request.method == "POST":
+        comment = Comment.objects.filter(id=comment_id).first()
+
+        if not comment:
+            messages.error(request, f"Comment with id={comment_id} was not found.")
+            return redirect('index')
+
+        if comment.author.id == request.user.id:
+            comment.delete()
+            messages.info(request, f"Comment was deleted.")
+        else:
+            messages.error(request, "You can delete only your comments.")
+
+    return redirect('index')
