@@ -230,6 +230,6 @@ def comment_delete(request, comment_id):
 
     return redirect('index')
 
- def list_users(request):
+def list_users(request):
     if(request.method == "GET"):
         return render(request, 'users.html', {'users': Account.objects.all()})
