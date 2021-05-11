@@ -189,9 +189,25 @@ def recipe_page(request, recipe_id):
     if request.method == "GET":
         instance = Recipe.objects.filter(id=recipe_id).first()
         if instance:
-            comments = Comment.objects.filter(recipe_id = recipe_id).all()
+            comments = Comment.objects.filter(recipe=recipe_id).all()
             return render(request, 'recipe_page.html', {'recipe': instance, 'comments': comments})
         else:
             messages.error(request, f"Not found recipe with id={recipe_id}.")
             return redirect('recipe_list')
 
+
+@login_required
+def add_comment(request, recipe_id):
+    if request.method == "POST":
+        user = User.objects.get(id = request.user.id)
+        comment = Comment(last_edited=datetime.now(), author=user, recipe=recipe_id)
+        form = CommentForm(request.POST, instance=comment)
+
+        if(form.is_valid()):
+            form.save()
+            messages.info(request, "Comment added")
+            return redirect('.')
+    else:
+        form = CommentForm()
+
+    return render(request, 'add_comment.html', {'form': form})
