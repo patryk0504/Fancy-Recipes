@@ -46,3 +46,9 @@ class RecipeForm(forms.ModelForm):
         model = Recipe
         fields = ["name", "description", "add_date", "author", "ingredients"]
         exclude = ["author", "add_date"]
+
+
+class CommentForm(forms.ModelForm):
+    class Meta:
+        fields = ["text"]
+        exclude = ["author", "last_edited", "recipe"]
