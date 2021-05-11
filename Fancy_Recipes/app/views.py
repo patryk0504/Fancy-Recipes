@@ -229,3 +229,7 @@ def comment_delete(request, comment_id):
             messages.error(request, "You can delete only your comments.")
 
     return redirect('index')
+
+ def list_users(request):
+    if(request.method == "GET"):
+        return render(request, 'users.html', {'users': Account.objects.all()})
