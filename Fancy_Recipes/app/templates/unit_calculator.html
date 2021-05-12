@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block body %}
+{% load static %}
+<style>
+
+html {
+  font-size: 20px;
+}
+
+.panel {
+  background: #333333;
+  border: solid white;
+}
+
+.results {
+  font-size: 1em;
+  color: #FFFFFF;
+}
+
+.dropdown {
+  margin-bottom: 50px;
+}
+
+.inline-block {
+  display: inline-block;
+}
+
+.center {
+  width: 90%;
+  margin: 0 auto 30px;
+}
+
+</style>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
+    <div class="container" style="margin-top: 1rem">
+
+    <div class="row">
+    <div class="col-md-6 col-md-offset-3">
+      <div class="panel panel-primary text-center">
+        <div class="panel-heading">
+          <h4 class="panel-title">Przelicznik miar</h4>
+        </div>
+          <div class="form-group inline-block">
+              <label for="">1. Wybierz typ jednostki:</label> <br>
+              <div class="btn-group" role="group" aria-label="Basic mixed styles example">
+                <button type="button" class="btn btn-warning">Jednostki masy</button>
+{#                <button type="button" class="btn btn-danger"></button>#}
+                  <button type="button" class="btn btn-info">Jednostki objętości</button>
+
+            </div>
+          </div>
+{#        <div class="error">#}
+{#          Proszę podać wartość do przeliczenia#}
+{#        </div>#}
+        <div class="panel-body">
+          <form class="form-vertical">
+
+            <div class="form-group center">
+              <label for="">2. Podaj wartość:</label>
+              <input type="number" class="amount form-control" placeholder="Enter value" min="1">
+            </div>
+
+
+
+              <label for="">3. Wybierz jednostki:</label> <br>
+
+            <div class="form-group inline-block">
+{#              <label for="">Jednostka wejściowa:</label>#}
+              <select class="currency-list form-control" onclick="exchangeCurrency()">
+                <option>--Jednostka wejściowa--</option>
+              </select>
+            </div>
+
+            <div class="form-group inline-block">
+{#              <label>Jednostka wyjściowa:</label>#}
+              <select class="currency-list form-control" onclick="exchangeCurrency()">
+                <option>--Jednostka wyjściowa--</option>
+              </select>
+            </div>
+          </form>
+          <p class="results">0</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+{% endblock %}
