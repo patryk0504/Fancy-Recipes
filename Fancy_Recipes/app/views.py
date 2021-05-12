@@ -8,7 +8,7 @@ from django.http import HttpResponseNotFound
 
 from .models import Ingredient, Recipe, Account, Comment
 from .forms import (RegisterForm, ProfileUpdateForm, ProfileDeleteForm,
-                    CreateIngredientForm, DeleteIngredientForm, RecipeForm)
+                    CreateIngredientForm, DeleteIngredientForm, RecipeForm, CommentForm)
 from datetime import datetime
 from django.contrib.auth.models import User
 
