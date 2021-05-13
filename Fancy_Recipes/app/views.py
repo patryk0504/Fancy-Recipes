@@ -6,9 +6,12 @@ from django.contrib.auth.decorators import login_required
 from django.views.generic import ListView
 from django.http import HttpResponseNotFound
 
-from .models import Ingredient, Recipe, Account, Comment
+
+from .models import Ingredient, Recipe, Account, Comment, LiquidUnits, SolidUnits
 from .forms import (RegisterForm, ProfileUpdateForm, ProfileDeleteForm,
                     CreateIngredientForm, DeleteIngredientForm, RecipeForm, CommentForm)
+from .utils import UnitCalculator
+
 from datetime import datetime
 from django.contrib.auth.models import User
 
@@ -234,3 +237,17 @@ def comment_delete(request, comment_id):
 def list_users(request):
     if(request.method == "GET"):
         return render(request, 'users.html', {'users': Account.objects.all()})
+
+def unit_calculator(request):
+    # context = {'liquid_units' : LiquidUnits.objects.all(),
+    #            'solid_units' : SolidUnits.objects.all()}
+    context = {
+        'liquid_units' : ['ml', 'l'],
+        'solid_units' : ['g', 'kg']
+    }
+    if request.method == "GET":
+        return render(request, 'unit_calculator.html', context)
+
+def calculate(request):
+    result = UnitCalculator.convertHelper(request.GET["fromUnitName"], request.GET["toUnitName"], request.GET["amount"])
+    return HttpResponse(result)

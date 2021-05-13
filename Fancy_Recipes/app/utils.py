@@ -1,3 +1,5 @@
+from .models import LiquidUnits, SolidUnits
+
 class UnitCalculator:
 
     #fromUnit object of model LiquidUnits or SolidUnits
@@ -15,3 +17,17 @@ class UnitCalculator:
         factor = fromUnit.conversionFactorToMainUnit / toUnit.conversionFactorToMainUnit
         return amount * factor
 
+    #do odkomentowania gdy pojawią sie jednostki w bazie
+    @staticmethod
+    def convertHelper(fromUnitName, toUnitName, amount):
+        # fromUnit = LiquidUnits.objects.get(unit=fromUnitName)
+        # toUnit = LiquidUnits.objects.get(unit=toUnitName)
+        # if fromUnit is None:
+        #     fromUnit = SolidUnits.objects.get(unit=fromUnitName)
+        #     toUnit = SolidUnits.objects.get(unit=toUnitName)
+        # if fromUnit is None:
+        #     return None
+        #
+        # result = UnitCalculator.convert(fromUnit, toUnit, amount)
+        # return result
+        return 130.33
