@@ -20,14 +20,13 @@ class UnitCalculator:
     #do odkomentowania gdy pojawią sie jednostki w bazie
     @staticmethod
     def convertHelper(fromUnitName, toUnitName, amount):
-        # fromUnit = LiquidUnits.objects.get(unit=fromUnitName)
-        # toUnit = LiquidUnits.objects.get(unit=toUnitName)
-        # if fromUnit is None:
-        #     fromUnit = SolidUnits.objects.get(unit=fromUnitName)
-        #     toUnit = SolidUnits.objects.get(unit=toUnitName)
-        # if fromUnit is None:
-        #     return None
-        #
-        # result = UnitCalculator.convert(fromUnit, toUnit, amount)
-        # return result
-        return 130.33
+        result = None
+        fromLiquid = LiquidUnits.objects.filter(unit=fromUnitName)
+        toLiquid = LiquidUnits.objects.filter(unit=toUnitName)
+        fromSolid = SolidUnits.objects.filter(unit=fromUnitName)
+        toSolid = SolidUnits.objects.filter(unit=toUnitName)
+        if fromLiquid.exists() and toLiquid.exists():
+            result = UnitCalculator.convert(fromLiquid.first(), toLiquid.first(), float(amount))
+        elif fromSolid.exists() and toSolid.exists():
+            result = UnitCalculator.convert(fromSolid.first(), toSolid.first(), float(amount))
+        return result

@@ -239,12 +239,17 @@ def list_users(request):
         return render(request, 'users.html', {'users': Account.objects.all()})
 
 def unit_calculator(request):
-    # context = {'liquid_units' : LiquidUnits.objects.all(),
-    #            'solid_units' : SolidUnits.objects.all()}
-    context = {
-        'liquid_units' : ['ml', 'l'],
-        'solid_units' : ['g', 'kg']
-    }
+    liquid = []
+    liquidUnits = LiquidUnits.objects.all()
+    for x in liquidUnits:
+        liquid.append(x.unit)
+    solid = []
+    solidUnits = SolidUnits.objects.all()
+    for y in solidUnits:
+        solid.append(y.unit)
+    context = {'liquid_units' : liquid,
+               'solid_units' : solid
+               }
     if request.method == "GET":
         return render(request, 'unit_calculator.html', context)
 
