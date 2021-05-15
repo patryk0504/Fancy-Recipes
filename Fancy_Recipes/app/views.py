@@ -11,7 +11,7 @@ from django.core.exceptions import ObjectDoesNotExist
 
 from .forms import (RegisterForm, ProfileUpdateForm, ProfileDeleteForm,
                     CreateIngredientForm, DeleteIngredientForm, RecipeForm, CommentForm, AddSolidUnitForm,
-                    AddLiquidUnitForm, DeleteSolidUnitForm, DeleteLiquidUnitForm)
+                    AddLiquidUnitForm, DeleteSolidUnitForm, DeleteLiquidUnitForm, EditLiquidUnitForm, EditSolidUnitForm)
 from .models import Ingredient, Recipe, Account, Comment, LiquidUnits, SolidUnits
 
 
@@ -98,6 +98,7 @@ def deleteProfile(request):
     return HttpResponse(template.render(context, request))
 
 
+# Handling ingredients
 def create_ingredient(request):
     if request.method == "POST":
         form = CreateIngredientForm(request.POST)
@@ -260,6 +261,7 @@ def list_users(request):
         return render(request, 'users.html', {'users': Account.objects.all()})
 
 
+# Handling units
 def add_unit(request):
     if request.method == "POST":
         if 'add_liquid' in request.POST:
@@ -302,8 +304,11 @@ def delete_unit(request):
                 if form1.cleaned_data['unit']:
                     get_unit = form1['unit'].value()
                 record_to_delete = LiquidUnits.objects.filter(unit=get_unit)
-                record_to_delete.delete()
-                messages.info(request, "Liquid unit successfully deleted from the database.")
+                if record_to_delete:
+                    record_to_delete.delete()
+                    messages.info(request, "Liquid unit successfully deleted from the database.")
+                else:
+                    messages.info(request, f"Liquid unit: '{get_unit}' is not present in the database.")
                 return redirect('.')
             else:
                 messages.error(request, "Liquid unit cannot be deleted, some problems occurred.")
@@ -314,8 +319,11 @@ def delete_unit(request):
                 if form2.cleaned_data['unit']:
                     get_unit = form2['unit'].value()
                 record_to_delete = SolidUnits.objects.filter(unit=get_unit)
-                record_to_delete.delete()
-                messages.info(request, "Solid unit successfully deleted from the database.")
+                if record_to_delete:
+                    record_to_delete.delete()
+                    messages.info(request, "Solid unit successfully deleted from the database.")
+                else:
+                    messages.info(request, f"Solid unit: '{get_unit}' is not present in the database.")
                 return redirect('.')
             else:
                 messages.error(request, "Solid unit cannot be deleted, some problems occurred.")
@@ -325,40 +333,43 @@ def delete_unit(request):
 
     return render(request, "delete_unit.html", {"form1": form1, "form2": form2})
 
-# def edit_unit(request):
-#     if request.method == "POST":
-#         if 'edit_liquid' in request.POST:
-#             form1 = AddLiquidUnitForm(request.POST)
-#             if form1.is_valid():
-#                 get_unit = ''
-#                 get_factor = ''
-#                 if form1.cleaned_data['unit']:
-#                     get_unit = form1['unit'].value()
-#                 if form1.cleaned_data['conversionFactorToMainUnit']:
-#                     get_factor = form1['conversionFactorToMainUnit'].value()
-#                 record_to_edit = LiquidUnits.objects.filter(unit=get_unit, conversionFactorToMainUnit=get_factor)
-#                 record_to_edit.save()
-#                 messages.info(request, "Liquid unit successfully updated.")
-#                 return redirect('.')
-#             else:
-#                 messages.error(request, "Liquid unit cannot be updated, some problems occurred.")
-#         elif 'edit_solid' in request.POST:
-#             form2 = AddSolidUnitForm(request.POST)
-#             if form2.is_valid():
-#                 get_unit = ''
-#                 get_factor = ''
-#                 if form2.cleaned_data['unit']:
-#                     get_unit = form2['unit'].value()
-#                 if form2.cleaned_data['conversionFactorToMainUnit']:
-#                     get_factor = form2['conversionFactorToMainUnit'].value()
-#                 record_to_edit = SolidUnits.objects.filter(unit=get_unit, conversionFactorToMainUnit=get_factor)
-#                 record_to_edit.save()
-#                 messages.info(request, "Solid unit successfully updated.")
-#                 return redirect('.')
-#             else:
-#                 messages.error(request, "Solid unit cannot be updated, some problems occurred.")
-#     else:
-#         form1 = AddLiquidUnitForm()
-#         form2 = AddSolidUnitForm()
-#
-#     return render(request, "edit_unit.html", {"form1": form1, "form2": form2})
+
+def edit_unit(request):
+    if request.method == "POST":
+        if 'edit_liquid' in request.POST:
+            form1 = EditLiquidUnitForm(request.POST)
+            if form1.is_valid():
+                get_unit = ''
+                if form1.cleaned_data['old_unit']:
+                    get_unit = form1['old_unit'].value()
+                record_to_edit = LiquidUnits.objects.filter(unit=get_unit)
+                if record_to_edit:
+                    record_to_edit.update(unit=form1.cleaned_data['new_unit'],
+                                          conversionFactorToMainUnit=form1.cleaned_data['new_factor'])
+                    messages.info(request, "Liquid unit successfully updated.")
+                else:
+                    messages.info(request, f"Liquid unit: '{get_unit}' is not present in the database.")
+                return redirect('.')
+            else:
+                messages.error(request, "Liquid unit cannot be updated, some problems occurred.")
+        elif 'edit_solid' in request.POST:
+            form2 = EditSolidUnitForm(request.POST)
+            if form2.is_valid():
+                get_unit = ''
+                if form2.cleaned_data['old_unit']:
+                    get_unit = form2['old_unit'].value()
+                record_to_edit = SolidUnits.objects.filter(unit=get_unit)
+                if record_to_edit:
+                    record_to_edit.update(unit=form2.cleaned_data['new_unit'],
+                                          conversionFactorToMainUnit=form2.cleaned_data['new_factor'])
+                    messages.info(request, "Solid unit successfully updated.")
+                else:
+                    messages.info(request, f"Solid unit: '{get_unit}' is not present in the database.")
+                return redirect('.')
+            else:
+                messages.error(request, "Solid unit cannot be updated, some problems occurred.")
+    else:
+        form1 = EditLiquidUnitForm()
+        form2 = EditSolidUnitForm()
+
+    return render(request, "edit_unit.html", {"form1": form1, "form2": form2})

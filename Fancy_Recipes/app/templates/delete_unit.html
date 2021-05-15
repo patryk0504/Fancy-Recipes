@@ -11,7 +11,7 @@
             <form method="POST" class="form-group">
                 {% csrf_token %}
                 {{ form1|crispy }}
-                <button type="submit" name="delete_solid" class="btn btn-success">Delete Solid Unit</button>
+                <button type="submit" name="delete_solid" class="btn btn-success">Delete</button>
             </form>
         </div>
          <div>
@@ -19,7 +19,7 @@
             <form method="POST" class="form-group">
                 {% csrf_token %}
                 {{ form2|crispy }}
-                <button type="submit" name="delete_liquid" class="btn btn-success">Delete Liquid Unit</button>
+                <button type="submit" name="delete_liquid" class="btn btn-success">Delete</button>
             </form>
         </div>
     </div>

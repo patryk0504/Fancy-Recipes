@@ -7,19 +7,19 @@
     <link rel="stylesheet" type="text/css" href="{% static 'css/units_form.css' %}">
     <div class="flex-container">
         <div>
-            <h3>Add Solid Unit</h3>
+            <h3>Edit Solid Unit</h3>
             <form method="POST" class="form-group">
                 {% csrf_token %}
                 {{ form1|crispy }}
-                <button type="submit" name="add_solid" class="btn btn-success">Add</button>
+                <button type="submit" name="edit_solid" class="btn btn-success">Edit</button>
             </form>
         </div>
          <div>
-            <h3>Add Liquid Unit</h3>
+            <h3>Edit Liquid Unit</h3>
             <form method="POST" class="form-group">
                 {% csrf_token %}
                 {{ form2|crispy }}
-                <button type="submit" name="add_liquid" class="btn btn-success">Add</button>
+                <button type="submit" name="edit_liquid" class="btn btn-success">Edit</button>
             </form>
         </div>
     </div>
