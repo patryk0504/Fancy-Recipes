@@ -9,10 +9,16 @@ from django.template import loader
 from django.views.generic import ListView
 from django.core.exceptions import ObjectDoesNotExist
 
+
+
+from .models import Ingredient, Recipe, Account, Comment, LiquidUnits, SolidUnits
 from .forms import (RegisterForm, ProfileUpdateForm, ProfileDeleteForm,
                     CreateIngredientForm, DeleteIngredientForm, RecipeForm, CommentForm, AddSolidUnitForm,
                     AddLiquidUnitForm, DeleteSolidUnitForm, DeleteLiquidUnitForm)
-from .models import Ingredient, Recipe, Account, Comment, LiquidUnits, SolidUnits
+from .utils import UnitCalculator
+
+from datetime import datetime
+from django.contrib.auth.models import User
 
 
 def index(request):
@@ -362,3 +368,22 @@ def delete_unit(request):
 #         form2 = AddSolidUnitForm()
 #
 #     return render(request, "edit_unit.html", {"form1": form1, "form2": form2})
+
+def unit_calculator(request):
+    liquid = []
+    liquidUnits = LiquidUnits.objects.all()
+    for x in liquidUnits:
+        liquid.append(x.unit)
+    solid = []
+    solidUnits = SolidUnits.objects.all()
+    for y in solidUnits:
+        solid.append(y.unit)
+    context = {'liquid_units' : liquid,
+               'solid_units' : solid
+               }
+    if request.method == "GET":
+        return render(request, 'unit_calculator.html', context)
+
+def calculate(request):
+    result = UnitCalculator.convertHelper(request.GET["fromUnitName"], request.GET["toUnitName"], request.GET["amount"])
+    return HttpResponse(result)
