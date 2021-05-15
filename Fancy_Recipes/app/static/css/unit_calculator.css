@@ -1,0 +1,27 @@
+
+.myform {
+  background: rgba(19,35,47,.9);
+  /*padding: 40px;*/
+  max-width:600px;
+  margin:40px auto;
+  border-radius: 4px;
+  box-shadow:0 4px 10px 4px rgba(19,35,47,.3);
+}
+
+.results {
+  font-size: 1em;
+  color: #FFFFFF;
+}
+
+.dropdown {
+  margin-bottom: 50px;
+}
+
+.inline-block {
+  display: inline-block;
+}
+
+.center {
+  width: 90%;
+  margin: 0 auto 30px;
+}
