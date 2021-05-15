@@ -1,11 +1,8 @@
-from .models import Account, Recipe, Ingredient, LiquidUnits, SolidUnits
+from .models import LiquidUnits, SolidUnits
 from .utils import UnitCalculator
 import unittest as ut
+from .forms import RecipeForm, RegisterForm
 
-from .forms import RecipeForm
-
-
-# Create your tests here.
 
 class AddRecipeFormTest(ut.TestCase):
     def test_Name_Field_Label(self):
@@ -34,6 +31,51 @@ class AddRecipeFormTest(ut.TestCase):
         form_data = {'name': 'test', 'description': 'test'}
         form = RecipeForm(data=form_data)
         self.assertFalse(form.is_valid())
+
+
+class RegisterFormTest(ut.TestCase):
+    def test_username_Field_Label(self):
+        form = RegisterForm()
+        self.assertTrue(form.fields['username'].label is None or form.fields['username'].label == 'Username')
+
+    def test_email_Field_Label(self):
+        form = RegisterForm()
+        self.assertTrue(form.fields['email'].label is None or form.fields['email'].label == 'Email')
+
+    def test_password1_Field_Label(self):
+        form = RegisterForm()
+        self.assertTrue(form.fields['password1'].label is None or form.fields['password1'].label == 'Password')
+
+    def test_password2_Field_Label(self):
+        form = RegisterForm()
+        self.assertTrue(
+            form.fields['password2'].label is None or form.fields['password2'].label == 'Password confirmation')
+
+    def test_Form_is_invalid_Required_Value_password1_Not_Provided(self):
+        form_data = {'username': 'test', 'email': 'test@gmail.com', 'password2': 'testpassword'}
+        form = RegisterForm(data=form_data)
+        self.assertFalse(form.is_valid())
+
+    def test_Form_is_invalid_Required_Value_password2_Not_Provided(self):
+        form_data = {'username': 'test', 'email': 'test@gmail.com', 'password1': 'testpassword'}
+        form = RegisterForm(data=form_data)
+        self.assertFalse(form.is_valid())
+
+    def test_Form_is_invalid_password1_and_password2_Not_Match(self):
+        form_data = {'username': 'test', 'email': 'test@gmail.com', 'password1': 'testpassword', 'password2' : 'cosinnego'}
+        form = RegisterForm(data=form_data)
+        self.assertFalse(form.is_valid())
+
+    def test_Form_is_invalid_Required_Value_username_Not_Provided(self):
+        form_data = {'email': 'test@gmail.com', 'password1': 'testpassword', 'password2': 'testpassword'}
+        form = RegisterForm(data=form_data)
+        self.assertFalse(form.is_valid())
+
+    def test_Form_is_valid_Required_Values_Provided(self):
+        form_data = {'username': 'test', 'email': 'test@gmail.com', 'password1': 'testpassword',
+                     'password2': 'testpassword'}
+        form = RegisterForm(data=form_data)
+        self.assertTrue(form.is_valid())
 
 
 class UnitCalculatorTest(ut.TestCase):
