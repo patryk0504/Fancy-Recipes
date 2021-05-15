@@ -1,15 +1,20 @@
+from datetime import datetime
+
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.template import loader
-from django.contrib import messages
-from django.contrib.auth.decorators import login_required
 from django.views.generic import ListView
-from django.http import HttpResponseNotFound
+from django.core.exceptions import ObjectDoesNotExist
+
 
 
 from .models import Ingredient, Recipe, Account, Comment, LiquidUnits, SolidUnits
 from .forms import (RegisterForm, ProfileUpdateForm, ProfileDeleteForm,
-                    CreateIngredientForm, DeleteIngredientForm, RecipeForm, CommentForm)
+                    CreateIngredientForm, DeleteIngredientForm, RecipeForm, CommentForm, AddSolidUnitForm,
+                    AddLiquidUnitForm, DeleteSolidUnitForm, DeleteLiquidUnitForm)
 from .utils import UnitCalculator
 
 from datetime import datetime
@@ -27,10 +32,13 @@ def register(request):
         form = RegisterForm(request.POST)
         if form.is_valid():
             form.save()
+            # tworzenie account dla usera
+            this_user = User.objects.get(username=form.cleaned_data['username'])
+            Account.objects.create(name=this_user.username, user_id=this_user.id)
             messages.info(request, "Account created successfully, please log in.")
             return redirect('login')
         else:
-            messages.error(request, "Account cannot be created, some problem occurred.")
+            messages.error(request, "Account cannot be created, some problems occurred.")
     else:
         form = RegisterForm()
 
@@ -40,14 +48,15 @@ def register(request):
 @login_required
 def profile(request):
     template = loader.get_template('profile.html')
+    current_user = User.objects.get(id=request.user.id)
+    account = Account.objects.get(user_id=current_user.id)
     context = {
-        # placeholders
-        'role': 'cook',
-        'join_date': '11-11-2021',
-        'full_name': 'Kenneth Valdez',
-        'phone': '500 155 155',
-        'job': 'McDonalds',
-        'about_me': 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi dictum ac lectus id efficitur',
+        'role': account.role,
+        'join_date': current_user.date_joined,
+        'first_name': current_user.first_name,
+        'last_name': current_user.last_name,
+        'job': account.job,
+        'about_me': account.description,
         'stats': {'recipes_num': 10,
                   'comments_num': 20,
                   'likes': 30
@@ -58,14 +67,31 @@ def profile(request):
 
 @login_required
 def updateProfile(request):
-    template = loader.get_template('updateProfile.html')
-    profile_form = ProfileUpdateForm()
-    context = {
-        'profile_form': profile_form,
-        'join_date': '11-11-2021',
-        'full_name': 'Kenneth Valdez',
-    }
-    return HttpResponse(template.render(context, request))
+    current_user = User.objects.get(id=request.user.id)
+    if request.method == "POST":
+        form = ProfileUpdateForm(request.POST)
+        if form.is_valid():
+            account = Account.objects.get(user_id=current_user.id)
+            if form.cleaned_data['first_name']:
+                current_user.first_name = form['first_name'].value()
+            if form.cleaned_data['last_name']:
+                current_user.last_name = form['last_name'].value()
+            if form.cleaned_data['username']:
+                current_user.username = form['username'].value()
+            if form.cleaned_data['email']:
+                current_user.email = form['email'].value()
+            if form.cleaned_data['about']:
+                account.description = form['about'].value()
+            current_user.save()
+            account.save()
+            messages.info(request, "Profile successfully updated.")
+            return redirect('.')
+        else:
+            messages.error(request, "Profile cannot be updated, some problems occurred.")
+    else:
+        form = ProfileUpdateForm()
+
+    return render(request, "updateProfile.html", {"profile_form": form})
 
 
 @login_required
@@ -160,7 +186,7 @@ def edit_recipe(request, recipe_id):
             return redirect('index')
         recipe_author = instance.author
         if recipe_author.id == request.user.id:
-            #TODO Obsługa edycji
+            # TODO Obsługa edycji
             pass
         else:
             messages.error(request, "You have no permission to do that action.")
@@ -202,11 +228,11 @@ def recipe_page(request, recipe_id):
 @login_required
 def add_comment(request, recipe_id):
     if request.method == "POST":
-        user = User.objects.get(id = request.user.id)
+        user = User.objects.get(id=request.user.id)
         comment = Comment(last_edited=datetime.now(), author=user, recipe=recipe_id)
         form = CommentForm(request.POST, instance=comment)
 
-        if(form.is_valid()):
+        if (form.is_valid()):
             comment.last_edited = form.cleaned_data['text']
             comment.save()
             messages.info(request, "Comment added")
@@ -234,9 +260,114 @@ def comment_delete(request, comment_id):
 
     return redirect('index')
 
+
 def list_users(request):
-    if(request.method == "GET"):
+    if (request.method == "GET"):
         return render(request, 'users.html', {'users': Account.objects.all()})
+
+
+def add_unit(request):
+    if request.method == "POST":
+        if 'add_liquid' in request.POST:
+            form1 = AddLiquidUnitForm(request.POST)
+            if form1.is_valid():
+                try:
+                    LiquidUnits.objects.get(unit=form1.cleaned_data['unit'])
+                    messages.info(request, "Such liquid unit already exists in the database.")
+                except ObjectDoesNotExist:
+                    form1.save()
+                    messages.info(request, "Liquid unit successfully added to the database.")
+                return redirect('.')
+            else:
+                messages.error(request, "Liquid unit cannot be added to the database, some problems occurred.")
+        elif 'add_solid' in request.POST:
+            form2 = AddSolidUnitForm(request.POST)
+            if form2.is_valid():
+                try:
+                    SolidUnits.objects.get(unit=form2.cleaned_data['unit'])
+                    messages.info(request, "Such solid unit already exists in the database.")
+                except ObjectDoesNotExist:
+                    form2.save()
+                    messages.info(request, "Solid unit successfully added to the database.")
+                return redirect('.')
+            else:
+                messages.error(request, "Solid unit cannot be added to the database, some problems occurred.")
+    else:
+        form1 = AddLiquidUnitForm()
+        form2 = AddSolidUnitForm()
+
+    return render(request, "add_unit.html", {"form1": form1, "form2": form2})
+
+
+def delete_unit(request):
+    if request.method == "POST":
+        if 'delete_liquid' in request.POST:
+            form1 = DeleteLiquidUnitForm(request.POST)
+            if form1.is_valid():
+                get_unit = ''
+                if form1.cleaned_data['unit']:
+                    get_unit = form1['unit'].value()
+                record_to_delete = LiquidUnits.objects.filter(unit=get_unit)
+                record_to_delete.delete()
+                messages.info(request, "Liquid unit successfully deleted from the database.")
+                return redirect('.')
+            else:
+                messages.error(request, "Liquid unit cannot be deleted, some problems occurred.")
+        elif 'delete_solid' in request.POST:
+            form2 = DeleteSolidUnitForm(request.POST)
+            if form2.is_valid():
+                get_unit = ''
+                if form2.cleaned_data['unit']:
+                    get_unit = form2['unit'].value()
+                record_to_delete = SolidUnits.objects.filter(unit=get_unit)
+                record_to_delete.delete()
+                messages.info(request, "Solid unit successfully deleted from the database.")
+                return redirect('.')
+            else:
+                messages.error(request, "Solid unit cannot be deleted, some problems occurred.")
+    else:
+        form1 = DeleteLiquidUnitForm()
+        form2 = DeleteSolidUnitForm()
+
+    return render(request, "delete_unit.html", {"form1": form1, "form2": form2})
+
+# def edit_unit(request):
+#     if request.method == "POST":
+#         if 'edit_liquid' in request.POST:
+#             form1 = AddLiquidUnitForm(request.POST)
+#             if form1.is_valid():
+#                 get_unit = ''
+#                 get_factor = ''
+#                 if form1.cleaned_data['unit']:
+#                     get_unit = form1['unit'].value()
+#                 if form1.cleaned_data['conversionFactorToMainUnit']:
+#                     get_factor = form1['conversionFactorToMainUnit'].value()
+#                 record_to_edit = LiquidUnits.objects.filter(unit=get_unit, conversionFactorToMainUnit=get_factor)
+#                 record_to_edit.save()
+#                 messages.info(request, "Liquid unit successfully updated.")
+#                 return redirect('.')
+#             else:
+#                 messages.error(request, "Liquid unit cannot be updated, some problems occurred.")
+#         elif 'edit_solid' in request.POST:
+#             form2 = AddSolidUnitForm(request.POST)
+#             if form2.is_valid():
+#                 get_unit = ''
+#                 get_factor = ''
+#                 if form2.cleaned_data['unit']:
+#                     get_unit = form2['unit'].value()
+#                 if form2.cleaned_data['conversionFactorToMainUnit']:
+#                     get_factor = form2['conversionFactorToMainUnit'].value()
+#                 record_to_edit = SolidUnits.objects.filter(unit=get_unit, conversionFactorToMainUnit=get_factor)
+#                 record_to_edit.save()
+#                 messages.info(request, "Solid unit successfully updated.")
+#                 return redirect('.')
+#             else:
+#                 messages.error(request, "Solid unit cannot be updated, some problems occurred.")
+#     else:
+#         form1 = AddLiquidUnitForm()
+#         form2 = AddSolidUnitForm()
+#
+#     return render(request, "edit_unit.html", {"form1": form1, "form2": form2})
 
 def unit_calculator(request):
     liquid = []

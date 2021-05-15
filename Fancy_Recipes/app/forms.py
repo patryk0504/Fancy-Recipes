@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from . models import Ingredient, Recipe
+from .models import Ingredient, Recipe, SolidUnits, LiquidUnits
 
 
 class RegisterForm(UserCreationForm):
@@ -13,14 +13,15 @@ class RegisterForm(UserCreationForm):
 
 
 class ProfileUpdateForm(forms.ModelForm):
-    full_name = forms.CharField(required=False)
-    username = forms.CharField(required=False)
-    email = forms.EmailField(required=False)
+    last_name = forms.CharField(required=False, max_length=150)
+    first_name = forms.CharField(required=False, max_length=150)
+    username = forms.CharField(required=False, max_length=150)
+    email = forms.EmailField(required=False, max_length=254)
     about = forms.CharField(widget=forms.Textarea, help_text='400 characters max.', max_length=400, required=False)
 
     class Meta:
         model = User
-        fields = ['full_name','username', 'email', 'about']
+        fields = ['first_name', 'last_name', 'username', 'email', 'about']
 
 
 class ProfileDeleteForm(forms.ModelForm):
@@ -52,3 +53,33 @@ class CommentForm(forms.ModelForm):
     class Meta:
         fields = ["text"]
         exclude = ["author", "last_edited", "recipe"]
+
+
+class AddSolidUnitForm(forms.ModelForm):
+    conversionFactorToMainUnit = forms.FloatField(required=True, min_value=0.0)
+    unit = forms.CharField(max_length=10, required=True)
+    class Meta:
+        model = SolidUnits
+        fields = ["unit", "conversionFactorToMainUnit"]
+
+
+class AddLiquidUnitForm(forms.ModelForm):
+    conversionFactorToMainUnit = forms.FloatField(required=True, min_value=0.0)
+    unit = forms.CharField(max_length=10, required=True)
+    class Meta:
+        model = LiquidUnits
+        fields = ["unit", "conversionFactorToMainUnit"]
+
+
+class DeleteLiquidUnitForm(forms.ModelForm):
+    unit = forms.CharField(max_length=10, required=True)
+    class Meta:
+        model = LiquidUnits
+        fields = ["unit"]
+
+
+class DeleteSolidUnitForm(forms.ModelForm):
+    unit = forms.CharField(max_length=10, required=True)
+    class Meta:
+        model = SolidUnits
+        fields = ["unit"]

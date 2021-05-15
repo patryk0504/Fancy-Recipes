@@ -7,6 +7,8 @@ class Account(models.Model):
 
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     name = models.CharField(max_length=50, blank=False)
+    description = models.CharField(max_length=400, blank=True)
+    job = models.CharField(max_length=50, blank=True)
     join_date = models.DateField(auto_now_add=True, blank=True)
     role = models.CharField(max_length=1, choices=ACCOUNT_TYPES, default="U")
 

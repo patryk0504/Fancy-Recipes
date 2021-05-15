@@ -38,10 +38,19 @@
                 <div class="card-body">
                   <div class="row">
                     <div class="col-sm-3">
-                      <h6 class="mb-0">Imie i nazwisko</h6>
+                      <h6 class="mb-0">Imię</h6>
                     </div>
                     <div class="col-sm-9 text-secondary">
-                      {{ full_name }}
+                      {{ first_name }}
+                    </div>
+                  </div>
+                  <hr>
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <h6 class="mb-0">Nazwisko</h6>
+                    </div>
+                    <div class="col-sm-9 text-secondary">
+                      {{ last_name }}
                     </div>
                   </div>
                   <hr>
@@ -51,15 +60,6 @@
                     </div>
                     <div class="col-sm-9 text-secondary">
                         {{ user.email }}
-                    </div>
-                  </div>
-                  <hr>
-                  <div class="row">
-                    <div class="col-sm-3">
-                      <h6 class="mb-0">Telefon</h6>
-                    </div>
-                    <div class="col-sm-9 text-secondary">
-                      {{ phone }}
                     </div>
                   </div>
                     {% if role == 'cook' %}
