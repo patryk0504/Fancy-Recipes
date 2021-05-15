@@ -10,20 +10,14 @@ from django.views.generic import ListView
 from django.core.exceptions import ObjectDoesNotExist
 
 
-
-from .models import Ingredient, Recipe, Account, Comment, LiquidUnits, SolidUnits
 from .forms import (RegisterForm, ProfileUpdateForm, ProfileDeleteForm,
                     CreateIngredientForm, DeleteIngredientForm, RecipeForm, CommentForm, AddSolidUnitForm,
-<<<<<<< HEAD
                     AddLiquidUnitForm, DeleteSolidUnitForm, DeleteLiquidUnitForm, EditLiquidUnitForm, EditSolidUnitForm)
 from .models import Ingredient, Recipe, Account, Comment, LiquidUnits, SolidUnits
-=======
-                    AddLiquidUnitForm, DeleteSolidUnitForm, DeleteLiquidUnitForm)
 from .utils import UnitCalculator
 
 from datetime import datetime
 from django.contrib.auth.models import User
->>>>>>> 0e0653848529c4966aaa11069c9ea7e90ddf6d0f
 
 
 def index(request):
@@ -344,7 +338,6 @@ def delete_unit(request):
 
     return render(request, "delete_unit.html", {"form1": form1, "form2": form2})
 
-<<<<<<< HEAD
 
 def edit_unit(request):
     if request.method == "POST":
@@ -385,44 +378,7 @@ def edit_unit(request):
         form2 = EditSolidUnitForm()
 
     return render(request, "edit_unit.html", {"form1": form1, "form2": form2})
-=======
-# def edit_unit(request):
-#     if request.method == "POST":
-#         if 'edit_liquid' in request.POST:
-#             form1 = AddLiquidUnitForm(request.POST)
-#             if form1.is_valid():
-#                 get_unit = ''
-#                 get_factor = ''
-#                 if form1.cleaned_data['unit']:
-#                     get_unit = form1['unit'].value()
-#                 if form1.cleaned_data['conversionFactorToMainUnit']:
-#                     get_factor = form1['conversionFactorToMainUnit'].value()
-#                 record_to_edit = LiquidUnits.objects.filter(unit=get_unit, conversionFactorToMainUnit=get_factor)
-#                 record_to_edit.save()
-#                 messages.info(request, "Liquid unit successfully updated.")
-#                 return redirect('.')
-#             else:
-#                 messages.error(request, "Liquid unit cannot be updated, some problems occurred.")
-#         elif 'edit_solid' in request.POST:
-#             form2 = AddSolidUnitForm(request.POST)
-#             if form2.is_valid():
-#                 get_unit = ''
-#                 get_factor = ''
-#                 if form2.cleaned_data['unit']:
-#                     get_unit = form2['unit'].value()
-#                 if form2.cleaned_data['conversionFactorToMainUnit']:
-#                     get_factor = form2['conversionFactorToMainUnit'].value()
-#                 record_to_edit = SolidUnits.objects.filter(unit=get_unit, conversionFactorToMainUnit=get_factor)
-#                 record_to_edit.save()
-#                 messages.info(request, "Solid unit successfully updated.")
-#                 return redirect('.')
-#             else:
-#                 messages.error(request, "Solid unit cannot be updated, some problems occurred.")
-#     else:
-#         form1 = AddLiquidUnitForm()
-#         form2 = AddSolidUnitForm()
-#
-#     return render(request, "edit_unit.html", {"form1": form1, "form2": form2})
+
 
 def unit_calculator(request):
     liquid = []
@@ -442,4 +398,3 @@ def unit_calculator(request):
 def calculate(request):
     result = UnitCalculator.convertHelper(request.GET["fromUnitName"], request.GET["toUnitName"], request.GET["amount"])
     return HttpResponse(result)
->>>>>>> 0e0653848529c4966aaa11069c9ea7e90ddf6d0f
