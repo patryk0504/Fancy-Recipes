@@ -27,7 +27,7 @@ class ProfileUpdateForm(forms.ModelForm):
 class ProfileDeleteForm(forms.ModelForm):
     class Meta:
         model = User
-        fields = []   #Form has only submit button.  Empty "fields" list still necessary, though.
+        fields = []  # Form has only submit button.  Empty "fields" list still necessary, though.
 
 
 class CreateIngredientForm(forms.ModelForm):
@@ -58,6 +58,7 @@ class CommentForm(forms.ModelForm):
 class AddSolidUnitForm(forms.ModelForm):
     conversionFactorToMainUnit = forms.FloatField(required=True, min_value=0.0)
     unit = forms.CharField(max_length=10, required=True)
+
     class Meta:
         model = SolidUnits
         fields = ["unit", "conversionFactorToMainUnit"]
@@ -66,6 +67,7 @@ class AddSolidUnitForm(forms.ModelForm):
 class AddLiquidUnitForm(forms.ModelForm):
     conversionFactorToMainUnit = forms.FloatField(required=True, min_value=0.0)
     unit = forms.CharField(max_length=10, required=True)
+
     class Meta:
         model = LiquidUnits
         fields = ["unit", "conversionFactorToMainUnit"]
@@ -73,6 +75,7 @@ class AddLiquidUnitForm(forms.ModelForm):
 
 class DeleteLiquidUnitForm(forms.ModelForm):
     unit = forms.CharField(max_length=10, required=True)
+
     class Meta:
         model = LiquidUnits
         fields = ["unit"]
@@ -80,6 +83,27 @@ class DeleteLiquidUnitForm(forms.ModelForm):
 
 class DeleteSolidUnitForm(forms.ModelForm):
     unit = forms.CharField(max_length=10, required=True)
+
     class Meta:
         model = SolidUnits
         fields = ["unit"]
+
+
+class EditLiquidUnitForm(forms.ModelForm):
+    old_unit = forms.CharField(max_length=10, required=True)
+    new_unit = forms.CharField(max_length=10, required=True)
+    new_factor = forms.FloatField(required=True, min_value=0.0)
+
+    class Meta:
+        model = LiquidUnits
+        fields = ["old_unit", "new_unit", "new_factor"]
+
+
+class EditSolidUnitForm(forms.ModelForm):
+    old_unit = forms.CharField(max_length=10, required=True)
+    new_unit = forms.CharField(max_length=10, required=True)
+    new_factor = forms.FloatField(required=True, min_value=0.0)
+
+    class Meta:
+        model = SolidUnits
+        fields = ["old_unit", "new_unit", "new_factor"]

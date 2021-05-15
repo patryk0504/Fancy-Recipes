@@ -25,8 +25,7 @@ urlpatterns = [
 
     path('unit/add/', views.add_unit, name='add_unit'),
     path('unit/delete/', views.delete_unit, name='delete_unit'),
-    # path('unit/edit/', views.edit_unit, name='edit_unit'),
-  
+    path('unit/edit/', views.edit_unit, name='edit_unit'),
     path('unitCalculator/', views.unit_calculator, name='unit_calculator'),
-    path('unitCalculator/calculate/', views.calculate, name='calculate')
+    path('unitCalculator/calculate/', views.calculate, name='calculate'),
 ]
