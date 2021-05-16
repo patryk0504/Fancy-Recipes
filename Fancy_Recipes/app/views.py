@@ -180,19 +180,31 @@ def list_recipe(request):
 @login_required
 def edit_recipe(request, recipe_id):
     if request.method == "GET":
-        instance = Recipe.objects.filter(id=recipe_id).first()
-        if not instance:
+        recipe_to_edit = Recipe.objects.filter(id=recipe_id).first()
+        if not recipe_to_edit:
             messages.error(request, f"Not found recipe with id={recipe_id}.")
             return redirect('index')
-        recipe_author = instance.author
+        recipe_author = recipe_to_edit.author
         if recipe_author.id == request.user.id:
-            # TODO Obsługa edycji
-            pass
+            form = RecipeForm(instance=recipe_to_edit)
+            return render(request, 'recipe_edit.html', {'form': form})
+
         else:
             messages.error(request, "You have no permission to do that action.")
             return redirect('recipe_page', recipe_id)
 
-    return redirect('recipe_page', recipe_id)
+    elif request.method == "POST":
+        recipe_to_edit = Recipe.objects.filter(id=recipe_id).first()
+        form = RecipeForm(request.POST, instance=recipe_to_edit)
+
+        if form.is_valid():
+            form.save()
+            messages.info(request, "Recipe successfully edited.")
+            return redirect('.')
+
+        else:
+            messages.error(request, "Unable to edit recipe")
+            return redirect('.')
 
 
 @login_required
