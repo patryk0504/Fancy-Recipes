@@ -200,11 +200,11 @@ def edit_recipe(request, recipe_id):
         if form.is_valid():
             form.save()
             messages.info(request, "Recipe successfully edited.")
-            return redirect('.')
+            return redirect('recipe_page', recipe_id)
 
         else:
             messages.error(request, "Unable to edit recipe")
-            return redirect('.')
+            return redirect('recipe_page', recipe_id)
 
 
 @login_required
