@@ -168,7 +168,7 @@ def edit_recipe(request, recipe_id):
 
 @login_required
 def recipe_delete(request, recipe_id):
-    if request.method == "POST":
+    if request.method == "GET":
         instance = Recipe.objects.filter(id=recipe_id).first()
         if not instance:
             messages.error(request, f"Not found recipe with id={recipe_id}.")
