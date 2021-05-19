@@ -28,4 +28,6 @@ urlpatterns = [
     path('unit/edit/', views.edit_unit, name='edit_unit'),
     path('unitCalculator/', views.unit_calculator, name='unit_calculator'),
     path('unitCalculator/calculate/', views.calculate, name='calculate'),
+
+    path('test/', views.filterRecipes, name='filter'),
 ]

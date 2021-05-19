@@ -410,3 +410,13 @@ def unit_calculator(request):
 def calculate(request):
     result = UnitCalculator.convertHelper(request.GET["fromUnitName"], request.GET["toUnitName"], request.GET["amount"])
     return HttpResponse(result)
+
+from django.db.models import Count
+def filterRecipes(request):
+    a = Ingredient.objects.get(id = 2)
+    b = Ingredient.objects.get(id = 1)
+    c = Ingredient.objects.get(id = 4)
+    ingredients_list = [a,b,c]
+    x = Recipe.objects.all().filter(ingredients__in = ingredients_list).annotate(ingredient_count = Count('ingredients')).filter(ingredient_count = len(ingredients_list) )
+    return render(request, "testFilter.html", {"x": x})
+    
