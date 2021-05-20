@@ -245,7 +245,7 @@ def add_comment(request, recipe_id):
         form = CommentForm(request.POST, instance=comment)
 
         if (form.is_valid()):
-            comment.last_edited = form.cleaned_data['text']
+            comment.text = form.cleaned_data['text'].value()
             comment.save()
             messages.info(request, "Comment added")
             return redirect('.')
