@@ -12,7 +12,8 @@ from django.core.exceptions import ObjectDoesNotExist
 
 from .forms import (RegisterForm, ProfileUpdateForm, ProfileDeleteForm,
                     CreateIngredientForm, DeleteIngredientForm, RecipeForm, CommentForm, AddSolidUnitForm,
-                    AddLiquidUnitForm, DeleteSolidUnitForm, DeleteLiquidUnitForm, EditLiquidUnitForm, EditSolidUnitForm)
+                    AddLiquidUnitForm, DeleteSolidUnitForm, DeleteLiquidUnitForm, EditLiquidUnitForm, EditSolidUnitForm,
+                    EditIngredientForm)
 from .models import Ingredient, Recipe, Account, Comment, LiquidUnits, SolidUnits
 from .utils import UnitCalculator
 
@@ -117,6 +118,35 @@ def create_ingredient(request):
         form = CreateIngredientForm()
 
     return render(request, "create_ingredient.html", {"form": form})
+
+
+@login_required
+def edit_ingredient(request, ingredient_id):
+    if request.method == "POST":
+        form = EditIngredientForm(request.POST)
+        ingredient = Ingredient.objects.get(id = ingredient_id)
+        if form.is_valid():
+            if form.cleaned_data['name']:
+                ingredient.name = form.cleaned_data['name'].value()
+            if form.cleaned_data['carbohydrate']:
+                ingredient.carbohydrate = form.cleaned_data['carbohydrate'].value
+            if form.cleaned_data['energy']:
+                ingredient.energy = form.cleaned_data['energy'].value()
+            if form.cleaned_data['protein']:
+                ingredient.protein = form.cleaned_data['protein'].value()
+            if form.cleaned_data['fat']:
+                ingredient.fat = form.cleaned_data['fat'].value()
+            if form.cleaned_data['price']:
+                ingredient.price = form.cleaned_data['price'].value()
+            ingredient.save()
+            messages.info(request, "Ingredient updated")
+            return redirect('.')
+        else:
+            messages.error(request, "Cannot update chosen ingredient")
+    else:
+        form = EditIngredientForm()
+
+    return render(request, "editIngredienr.html", {"edit_ingredient_form" : form})
 
 
 def delete_ingredient(request):
