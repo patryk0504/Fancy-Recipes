@@ -107,3 +107,17 @@ class EditSolidUnitForm(forms.ModelForm):
     class Meta:
         model = SolidUnits
         fields = ["old_unit", "new_unit", "new_factor"]
+
+
+
+class EditIngredientForm(forms.ModelForm):
+    name = forms.CharField(max_length=200, required=False)
+    carbohydrate = forms.FloatField(required=False)
+    energy = forms.FloatField(required=False)
+    protein = forms.FloatField(required=False)
+    fat = forms.FloatField(required=False)
+    price = forms.DecimalField(required=False)
+
+    class Meta:
+        model = Ingredient
+        fields = ["name", "carbohydrate", "energy", "protein", "fat", "price"]
