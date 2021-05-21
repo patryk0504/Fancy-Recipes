@@ -50,6 +50,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'website.wsgi.application'
 
+
 DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql',
@@ -58,8 +59,20 @@ DATABASES = {
             'PASSWORD': 'FxE7YIPpzFEc0q1ejcjT6q7YNWt0IdIO',
             'HOST': 'rogue.db.elephantsql.com',
             'PORT': '5432',
-        }
-    }
+        },
+        'test':{
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': 'kocmcqun',
+            'USER': 'kocmcqun',
+            'PASSWORD': 'xlVUECtgqn_e1T93fEXEaDDlLgf-Kfuw',
+            'HOST': 'dumbo.db.elephantsql.com',
+            'PORT': '5432',
+        },
+}
+
+import sys
+if 'test' in sys.argv:
+    DATABASES['default'] = DATABASES['test'];
 
 AUTH_PASSWORD_VALIDATORS = [
     {
