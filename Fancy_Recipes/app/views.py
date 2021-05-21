@@ -146,7 +146,37 @@ def edit_ingredient(request, ingredient_id):
     else:
         form = EditIngredientForm()
 
-    return render(request, "editIngredienr.html", {"edit_ingredient_form" : form})
+    return render(request, "edit_ingredient.html", {"edit_ingredient_form" : form})
+
+
+@login_required
+def edit_ingredient(request, ingredient_id):
+    ingredient = Ingredient.objects.get(id=ingredient_id)
+    if request.method == "POST":
+        form = EditIngredientForm(request.POST)
+        # ingredient = Ingredient.objects.get(id = ingredient_id)
+        if form.is_valid():
+            if form.cleaned_data['name']:
+                ingredient.name = form.cleaned_data['name']
+            if form.cleaned_data['carbohydrate']:
+                ingredient.carbohydrate = form.cleaned_data['carbohydrate']
+            if form.cleaned_data['energy']:
+                ingredient.energy = form.cleaned_data['energy']
+            if form.cleaned_data['protein']:
+                ingredient.protein = form.cleaned_data['protein']
+            if form.cleaned_data['fat']:
+                ingredient.fat = form.cleaned_data['fat']
+            if form.cleaned_data['price']:
+                ingredient.price = form.cleaned_data['price']
+            ingredient.save()
+            messages.info(request, "Ingredient updated")
+            return redirect('ingredient-edit', ingredient_id)
+        else:
+            messages.error(request, "Cannot update chosen ingredient")
+    else:
+        form = EditIngredientForm()
+
+    return render(request, "edit_ingredient.html", {"edit_ingredient_form" : form, "ingredient" : ingredient})
 
 
 def delete_ingredient(request):
@@ -271,14 +301,16 @@ def recipe_page(request, recipe_id):
 def add_comment(request, recipe_id):
     if request.method == "POST":
         user = User.objects.get(id=request.user.id)
-        comment = Comment(last_edited=datetime.now(), author=user, recipe=recipe_id)
+        # comment = Comment(last_edited=datetime.now(), author=user, recipe=recipe_id)
+        comment = Comment(last_edited=datetime.now(), author=user, recipe=Recipe.objects.get(id=recipe_id))
         form = CommentForm(request.POST, instance=comment)
 
         if (form.is_valid()):
-            comment.text = form.cleaned_data['text'].value()
+            comment.text = form.cleaned_data['text']
             comment.save()
             messages.info(request, "Comment added")
-            return redirect('.')
+            return redirect('add-comment', recipe_id)
+
     else:
         form = CommentForm()
 

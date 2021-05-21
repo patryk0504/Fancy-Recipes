@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block body %}
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/ingredient_list.css' %}">
+
+    <div class="container" style="margin-top: 1rem">
+    <table>
+    <tr>
+        <th>Id</th>
+        <th>Name</th>
+        <th>Price</th>
+        <th>Carbohydrate</th>
+        <th>Energy</th>
+        <th>Protein</th>
+        <th>Fat</th>
+    </tr>
+        <tr>
+        <td>{{ ingredient.id }}</td>
+        <td>{{ ingredient.name }}</td>
+        <td>{{ ingredient.price }}</td>
+        <td>{{ ingredient.carbohydrate }}</td>
+        <td>{{ ingredient.energy }}</td>
+        <td>{{ ingredient.protein }}</td>
+        <td>{{ ingredient.fat }}</td>
+    </tr>
+    </table>
+    <form method="POST" class="form-group">
+        {% csrf_token %}
+        {{ edit_ingredient_form|crispy }}
+        <button type="button" class="btn btn-secondary" onclick="location.href = '{% url 'ingredient-list' %}';">Back</button>
+        <button type="submit" class="btn btn-success">Edit Ingredient</button>
+    </form>
+        </div>
+{% endblock %}

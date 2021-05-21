@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from .models import Ingredient, Recipe, SolidUnits, LiquidUnits
+from .models import Ingredient, Recipe, SolidUnits, LiquidUnits, Comment
 
 
 class RegisterForm(UserCreationForm):
@@ -51,6 +51,7 @@ class RecipeForm(forms.ModelForm):
 
 class CommentForm(forms.ModelForm):
     class Meta:
+        model = Comment
         fields = ["text"]
         exclude = ["author", "last_edited", "recipe"]
 
