@@ -284,7 +284,7 @@ def add_comment(request, recipe_id):
     else:
         form = CommentForm()
 
-    return render(request, 'add_comment.html', {'form': form})
+    return render(request, 'add_comment.html', {'form': form, 'recipe_id' : recipe_id})
 
 
 @login_required
@@ -306,8 +306,19 @@ def comment_delete(request, comment_id):
 
 
 def list_users(request):
+    accounts = Account.objects.all()
+    comments = Comment.objects.all()
+    recipes = Recipe.objects.all()
+    num_of_comments = {}
+    num_of_recipes = {}
+    for account in accounts:
+        num_of_comments[account.pk] = comments.filter(author=account.pk).count()
+        num_of_recipes[account.pk] = recipes.filter(author=account.pk).count()
+    # print(num_of_comments.values())
+
+    print(num_of_comments)
     if (request.method == "GET"):
-        return render(request, 'users.html', {'users': Account.objects.all()})
+        return render(request, 'users.html', {'users': accounts, 'num_of_comments' : num_of_comments, 'num_of_recipes' : num_of_recipes })
 
 
 # Handling units
