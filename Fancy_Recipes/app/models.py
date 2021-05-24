@@ -29,21 +29,6 @@ class Ingredient(models.Model):
         return str(self.name)
 
 
-from dal import autocomplete
-
-class IngredientAutocomplete(autocomplete.Select2QuerySetView):
-    def get_queryset(self):
-        if not self.request.user.is_authenticated:
-            return Ingredient.objects.none()
-
-        qs = Ingredient.objects.all()
-
-        if self.q:
-            qs = qs.filter(name__istartswith=self.q)
-
-        return qs
-
-
 class Recipe(models.Model):
     name = models.CharField(max_length=50, blank=False)
     description = models.CharField(max_length=10000, blank=False)

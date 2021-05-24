@@ -107,18 +107,3 @@ class EditSolidUnitForm(forms.ModelForm):
     class Meta:
         model = SolidUnits
         fields = ["old_unit", "new_unit", "new_factor"]
-
-
-
-
-
-
-
-from dal import autocomplete
-class FilterRecipesForm(forms.ModelForm):
-    class Meta:
-        model = Recipe
-        fields = ('ingredients',)
-        widgets = {
-            'ingredients': autocomplete.ModelSelect2Multiple(url='ingredient-autocomplete')
-        }

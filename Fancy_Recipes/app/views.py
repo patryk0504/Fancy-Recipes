@@ -12,7 +12,7 @@ from django.core.exceptions import ObjectDoesNotExist
 
 from .forms import (RegisterForm, ProfileUpdateForm, ProfileDeleteForm,
                     CreateIngredientForm, DeleteIngredientForm, RecipeForm, CommentForm, AddSolidUnitForm,
-                    AddLiquidUnitForm, DeleteSolidUnitForm, DeleteLiquidUnitForm, EditLiquidUnitForm, EditSolidUnitForm, FilterRecipesForm)
+                    AddLiquidUnitForm, DeleteSolidUnitForm, DeleteLiquidUnitForm, EditLiquidUnitForm, EditSolidUnitForm)
 
 from .models import Ingredient, Recipe, Account, Comment, LiquidUnits, SolidUnits
 from .utils import UnitCalculator
@@ -413,24 +413,17 @@ def calculate(request):
     return HttpResponse(result)
 
 from django.db.models import Count
+from django.http import JsonResponse
+
+def autocompleteIngredients(request):
+    if 'term' in request.GET:
+        matched_ingredients = Ingredient.objects.filter(name__icontains=request.GET.get('term'))
+        ingredients = [ingredient.name for ingredient in matched_ingredients]
+        return JsonResponse(ingredients, safe=False)
+    return render(request, 'testFilter.html')
 
 def filterRecipes(request):
-    results=Ingredient.objects.all
-    return render(request, "testFilter.html",{"showcity":results})
-
-    # if request.method == "POST":
-    #     form = FilterRecipesForm(request.POST)
-    #     if form.is_valid():
-    #         messages.info(request, "SMIGAAAAAAAAAAAAAAA")
-    #         return redirect('.')
-    #     else:
-    #         messages.error(request, "NIE DZIALA")
-    # else:
-    #     form = FilterRecipesForm()
-
-    # return render(request, "testFilter.html", {"x": form})
-
-    # return render(request, "create_ingredient.html", {"form": form})
+    pass
     # a = Ingredient.objects.get(id = 2)
     # b = Ingredient.objects.get(id = 1)
     # c = Ingredient.objects.get(id = 4)

@@ -1,8 +1,8 @@
 from django.urls import path, re_path
+from django.conf.urls import url, include
 from django.contrib.auth import views as auth_views
 from .views import IngredientListView
 from . import views
-from .models import IngredientAutocomplete
 
 urlpatterns = [
     path('', views.index, name='index'),
@@ -29,7 +29,6 @@ urlpatterns = [
     path('unit/edit/', views.edit_unit, name='edit_unit'),
     path('unitCalculator/', views.unit_calculator, name='unit_calculator'),
     path('unitCalculator/calculate/', views.calculate, name='calculate'),
-    path('test/', views.filterRecipes, name='filter'),
 
-    re_path(r'^ingredient-autocomplete/$', IngredientAutocomplete.as_view(), name='ingredient-autocomplete'),
+    path('autocomplete/', views.autocompleteIngredients, name='autocomplete'),
 ]
