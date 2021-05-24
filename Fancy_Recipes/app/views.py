@@ -12,7 +12,8 @@ from django.core.exceptions import ObjectDoesNotExist
 
 from .forms import (RegisterForm, ProfileUpdateForm, ProfileDeleteForm,
                     CreateIngredientForm, DeleteIngredientForm, RecipeForm, CommentForm, AddSolidUnitForm,
-                    AddLiquidUnitForm, DeleteSolidUnitForm, DeleteLiquidUnitForm, EditLiquidUnitForm, EditSolidUnitForm)
+                    AddLiquidUnitForm, DeleteSolidUnitForm, DeleteLiquidUnitForm, EditLiquidUnitForm, EditSolidUnitForm, FilterRecipesForm)
+
 from .models import Ingredient, Recipe, Account, Comment, LiquidUnits, SolidUnits
 from .utils import UnitCalculator
 
@@ -412,11 +413,28 @@ def calculate(request):
     return HttpResponse(result)
 
 from django.db.models import Count
+
 def filterRecipes(request):
-    a = Ingredient.objects.get(id = 2)
-    b = Ingredient.objects.get(id = 1)
-    c = Ingredient.objects.get(id = 4)
-    ingredients_list = [a,b,c]
-    x = Recipe.objects.all().filter(ingredients__in = ingredients_list).annotate(ingredient_count = Count('ingredients')).filter(ingredient_count = len(ingredients_list) )
-    return render(request, "testFilter.html", {"x": x})
+    results=Ingredient.objects.all
+    return render(request, "testFilter.html",{"showcity":results})
+
+    # if request.method == "POST":
+    #     form = FilterRecipesForm(request.POST)
+    #     if form.is_valid():
+    #         messages.info(request, "SMIGAAAAAAAAAAAAAAA")
+    #         return redirect('.')
+    #     else:
+    #         messages.error(request, "NIE DZIALA")
+    # else:
+    #     form = FilterRecipesForm()
+
+    # return render(request, "testFilter.html", {"x": form})
+
+    # return render(request, "create_ingredient.html", {"form": form})
+    # a = Ingredient.objects.get(id = 2)
+    # b = Ingredient.objects.get(id = 1)
+    # c = Ingredient.objects.get(id = 4)
+    # ingredients_list = [a,b,c]
+    # x = Recipe.objects.all().filter(ingredients__in = ingredients_list).annotate(ingredient_count = Count('ingredients')).filter(ingredient_count = len(ingredients_list) )
+    # return render(request, "testFilter.html", {"x": x})
     

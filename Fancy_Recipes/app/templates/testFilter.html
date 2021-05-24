@@ -1,3 +1,7 @@
-{%for recipe in x%}
-    {{ recipe }}
+<p>Enter your City:</p>
+<input type="text" list="citylist" Placeholder="Search City.." class="form-control" style="width:300px;">
+<datalist id="citylist">
+{% for results in showcity %}
+    <option value="{{ results.name}}">
 {% endfor %}
+</datalist>

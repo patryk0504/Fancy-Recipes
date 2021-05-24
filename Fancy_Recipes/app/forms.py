@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from .models import Ingredient, Recipe, SolidUnits, LiquidUnits
-
+from searchableselect.widgets import SearchableSelect
 
 class RegisterForm(UserCreationForm):
     email = forms.EmailField()
@@ -107,3 +107,18 @@ class EditSolidUnitForm(forms.ModelForm):
     class Meta:
         model = SolidUnits
         fields = ["old_unit", "new_unit", "new_factor"]
+
+
+
+
+
+
+
+from dal import autocomplete
+class FilterRecipesForm(forms.ModelForm):
+    class Meta:
+        model = Recipe
+        fields = ('ingredients',)
+        widgets = {
+            'ingredients': autocomplete.ModelSelect2Multiple(url='ingredient-autocomplete')
+        }
