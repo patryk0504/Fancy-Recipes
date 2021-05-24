@@ -31,4 +31,5 @@ urlpatterns = [
     path('unitCalculator/calculate/', views.calculate, name='calculate'),
 
     path('autocomplete/', views.autocompleteIngredients, name='autocomplete'),
+    path('filterrecipes/', views.filterRecipes, name='filterrecipes'),
 ]
