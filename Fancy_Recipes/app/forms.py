@@ -2,7 +2,6 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from .models import Ingredient, Recipe, SolidUnits, LiquidUnits
-from searchableselect.widgets import SearchableSelect
 
 class RegisterForm(UserCreationForm):
     email = forms.EmailField()
