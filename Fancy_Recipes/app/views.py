@@ -424,15 +424,26 @@ def filterRecipes(request):
         filtered_recipes_ids = [ str(recipe.id) for recipe in filtered_recipes ]
         delimiter = ","
         filtered_recipes_ids = delimiter.join(filtered_recipes_ids) 
+        
+        result_url = reverse('recipe-list')
+        if filtered_recipes_ids != '':
+            result_url = reverse('recipe-list-filter',args = [filtered_recipes_ids])
+        elif len(ingredients_list) != 0:
+            result_url = reverse('recipe-list-filter',args = ["not_found"])
+        
         return JsonResponse({
                         'success': True,
-                        'url': reverse('recipe-list-filter',args = [filtered_recipes_ids]),
+                        'url': result_url
                     })
-    
+
 
 @login_required
 def list_recipe(request, match = ''):
     if request.method == "GET":
+        if match == 'not_found':
+            messages.info(request, "Recipes with specified ingredients are not found.")
+            return render(request, 'list_recipe.html')
+
         recipes = Recipe.objects.all()
         if match != '':
             recipes_ids = [ int(recipe_id) for recipe_id in match.split(",")]
