@@ -12,7 +12,7 @@ from django.core.exceptions import ObjectDoesNotExist
 
 from .forms import (RegisterForm, ProfileUpdateForm, ProfileDeleteForm,
                     CreateIngredientForm, DeleteIngredientForm, RecipeForm, CommentForm, AddSolidUnitForm,
-                    AddLiquidUnitForm, DeleteSolidUnitForm, DeleteLiquidUnitForm, EditLiquidUnitForm, EditSolidUnitForm)
+                    AddLiquidUnitForm, DeleteSolidUnitForm, DeleteLiquidUnitForm, EditLiquidUnitForm, EditSolidUnitForm, EditIngredientForm)
 
 from .models import Ingredient, Recipe, Account, Comment, LiquidUnits, SolidUnits
 from .utils import UnitCalculator
@@ -424,7 +424,7 @@ def filterRecipes(request):
         filtered_recipes_ids = [ str(recipe.id) for recipe in filtered_recipes ]
         delimiter = ","
         filtered_recipes_ids = delimiter.join(filtered_recipes_ids) 
-        
+
         result_url = reverse('recipe-list')
         if filtered_recipes_ids != '':
             result_url = reverse('recipe-list-filter',args = [filtered_recipes_ids])
