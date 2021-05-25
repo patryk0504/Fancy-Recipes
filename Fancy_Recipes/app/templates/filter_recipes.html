@@ -65,8 +65,14 @@
                 success: function(response){
                     console.log('Success');
                 },
+            }).done(function (data) 
+            {
+                if (data.success) 
+                {
+                    window.location.href = data.url;
+                }    
             });
-            }
+        }
         );
     });
 </script>

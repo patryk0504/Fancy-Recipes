@@ -19,7 +19,9 @@ urlpatterns = [
     path('ingredient/list/', IngredientListView.as_view(), name='ingredient-list'),
 
     path('recipe/add/', views.add_recipe, name='recipe-add'),
-    path('recipe/list/', views.list_recipe, name='recipe-list'),
+    re_path(r'^recipe/list/$', views.list_recipe, name='recipe-list'),
+    re_path(r'^recipe/list/(?P<match>.+)/$', views.list_recipe, name='recipe-list-filter'),
+    
     path('recipe/edit/<int:recipe_id>', views.edit_recipe, name='recipe-edit'),
     path('recipe/delete/<int:recipe_id>', views.recipe_delete, name='recipe-delete'),
     path('recipe/<int:recipe_id>', views.recipe_page, name='recipe_page'),

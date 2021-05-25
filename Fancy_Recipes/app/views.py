@@ -171,13 +171,6 @@ def add_recipe(request):
 
     return render(request, 'add_recipe.html', {'form': form})
 
-
-@login_required
-def list_recipe(request):
-    if request.method == "GET":
-        return render(request, 'list_recipe.html', {'recipes': Recipe.objects.all()})
-
-
 @login_required
 def edit_recipe(request, recipe_id):
     if request.method == "GET":
@@ -414,6 +407,7 @@ def calculate(request):
 
 from django.db.models import Count
 from django.http import JsonResponse
+from django.urls import reverse
 
 def autocompleteIngredients(request):
     if 'term' in request.GET:
@@ -424,13 +418,25 @@ def autocompleteIngredients(request):
 
 def filterRecipes(request):
     if request.method == "POST":
-        print(request.POST)
-
-    return render(request, 'filter_recipes.html')
-    # a = Ingredient.objects.get(id = 2)
-    # b = Ingredient.objects.get(id = 1)
-    # c = Ingredient.objects.get(id = 4)
-    # ingredients_list = [a,b,c]
-    # x = Recipe.objects.all().filter(ingredients__in = ingredients_list).annotate(ingredient_count = Count('ingredients')).filter(ingredient_count = len(ingredients_list) )
-    # return render(request, "filter_recipes.html", {"x": x})
+        ingredients_names = request.POST.getlist("content[]")
+        ingredients_list = [ Ingredient.objects.get(name = ingredient_name) for ingredient_name in ingredients_names ]
+        filtered_recipes = Recipe.objects.all().filter(ingredients__in = ingredients_list).annotate(ingredient_count = Count('ingredients')).filter(ingredient_count = len(ingredients_list) )
+        filtered_recipes_ids = [ str(recipe.id) for recipe in filtered_recipes ]
+        delimiter = ","
+        filtered_recipes_ids = delimiter.join(filtered_recipes_ids) 
+        return JsonResponse({
+                        'success': True,
+                        'url': reverse('recipe-list-filter',args = [filtered_recipes_ids]),
+                    })
+    else:
+        return render(request, 'filter_recipes.html')
     
+
+@login_required
+def list_recipe(request, match = ''):
+    if request.method == "GET":
+        recipes = Recipe.objects.all()
+        if match != '':
+            recipes_ids = [ int(recipe_id) for recipe_id in match.split(",")]
+            recipes = [recipe for recipe in recipes if recipe.id in recipes_ids]
+        return render(request, 'list_recipe.html', {'recipes': recipes})
