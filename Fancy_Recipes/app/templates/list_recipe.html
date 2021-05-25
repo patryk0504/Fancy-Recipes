@@ -9,32 +9,47 @@
 {% block body %}
 {% load static %}
 
+<!-- MDBootstrap Datatables  -->
+<link href="{% static 'css/addons/datatables.min.css' %}" rel="stylesheet">
+
+<!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+        integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+        crossorigin="anonymous"></script>
+
+<!-- MDBootstrap Datatables  -->
+<script type="text/javascript" src="{% static 'js/addons/datatables.min.js' %}"></script>
+
+<!--Dynamic Veritcal Table Script-->
+<script type="text/javascript" src="{% static 'js/table_script.js' %}"></script>
+
 <style>
     #row:hover {
         background-color: darkgray;
     }
 </style>
 
-
-
-<table class="table table-striped">
-    <thead class="thead-dark">
+<section class="table-section">
+    <table id="dtDynamicVerticalScrollExample" class="table table-striped table-bordered table-sm" cellspacing="0"
+           width="100%">
+        <thead class="txt-txt">
         <tr>
             <th scope="col">Name</th>
             <th scope="col">Added</th>
             <th scope="col">Author</th>
         </tr>
     </thead>
-    <tbody>
+        <tbody class="txt-txt">
         {% for recipe in recipes %}
         <tr id="row" class='clickable-row' onclick="window.location='{% url 'recipe_page' recipe_id=recipe.id %}'" style="cursor: pointer">
             <td>{{ recipe.name }}</td>
             <td>{{ recipe.add_date }}</td>
-            <td> {{ recipe.author }}$</td>
+            <td> {{ recipe.author }} </td>
         </tr>
         {% endfor %}
     </tbody>
-</table>
+  </table>
+</section>
 
 <div class="input-group">
     <input type="text" name="product" id="product" class="form-control rounded" placeholder="Wpisz nazwę składnika" aria-label="Search"
