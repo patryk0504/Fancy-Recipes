@@ -428,8 +428,6 @@ def filterRecipes(request):
                         'success': True,
                         'url': reverse('recipe-list-filter',args = [filtered_recipes_ids]),
                     })
-    else:
-        return render(request, 'filter_recipes.html')
     
 
 @login_required

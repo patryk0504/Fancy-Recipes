@@ -1,6 +1,11 @@
 {% extends 'base.html' %}
 {% load crispy_forms_tags %}
 
+{% block head %}
+    {{ block.super }}
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+{% endblock %}
+
 {% block body %}
 {% load static %}
 
@@ -9,6 +14,9 @@
         background-color: darkgray;
     }
 </style>
+
+
+
 <table class="table table-striped">
     <thead class="thead-dark">
         <tr>
@@ -27,4 +35,76 @@
         {% endfor %}
     </tbody>
 </table>
+
+<div class="input-group">
+    <input type="text" name="product" id="product" class="form-control rounded" placeholder="Wpisz nazwę składnika" aria-label="Search"
+    aria-describedby="search-addon" />
+    <button type="submit" class="btn btn-success" id="button">Wyszukaj przepis</button>
+</div>
+<ul id="results" class="list-group"></ul>
+
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script>
+
+    $(function () {
+        let selected = [];
+
+        $("#product").autocomplete({
+            source: '{% url 'autocomplete' %}',
+            minLength: 1,
+            select: function (event, ui) { //item selected
+                selected.push(ui.item.value);
+                console.log(selected);
+                $("#results").append('<li class="list-group-item">'+ui.item.value+'</li>');
+                $(this).val("");
+                return false;
+            }
+        });
+
+        $("#button").click(function (){
+            $.ajaxSetup({
+                 beforeSend: function(xhr, settings) {
+                     function getCookie(name) {
+                         var cookieValue = null;
+                         if (document.cookie && document.cookie != '') {
+                             var cookies = document.cookie.split(';');
+                             for (var i = 0; i < cookies.length; i++) {
+                                 var cookie = jQuery.trim(cookies[i]);
+                                 // Does this cookie string begin with the name we want?
+                                 if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                                     cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                                     break;
+                                 }
+                             }
+                         }
+                         return cookieValue;
+                     }
+                     if (!(/^http:.*/.test(settings.url) || /^https:.*/.test(settings.url))) {
+                         // Only send the token to relative URLs i.e. locally.
+                         xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+                     }
+                 }
+            });
+            $.ajax({
+                type: 'POST',
+                url: "{% url 'filterrecipes' %}",
+                data: {
+                    content: selected,
+                    csrfmiddlewaretoken: $('[name="csrfmiddlewaretoken"]').val()
+                },
+                success: function(response){
+                    console.log('Success');
+                },
+            }).done(function (data)
+            {
+                if (data.success)
+                {
+                    window.location.href = data.url;
+                }
+            });
+        }
+        );
+    });
+</script>
 {% endblock %}
