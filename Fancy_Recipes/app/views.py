@@ -420,14 +420,17 @@ def autocompleteIngredients(request):
         matched_ingredients = Ingredient.objects.filter(name__icontains=request.GET.get('term'))
         ingredients = [ingredient.name for ingredient in matched_ingredients]
         return JsonResponse(ingredients, safe=False)
-    return render(request, 'testFilter.html')
+
 
 def filterRecipes(request):
-    pass
+    if request.method == "POST":
+        print(request.POST)
+
+    return render(request, 'filter_recipes.html')
     # a = Ingredient.objects.get(id = 2)
     # b = Ingredient.objects.get(id = 1)
     # c = Ingredient.objects.get(id = 4)
     # ingredients_list = [a,b,c]
     # x = Recipe.objects.all().filter(ingredients__in = ingredients_list).annotate(ingredient_count = Count('ingredients')).filter(ingredient_count = len(ingredients_list) )
-    # return render(request, "testFilter.html", {"x": x})
+    # return render(request, "filter_recipes.html", {"x": x})
     
