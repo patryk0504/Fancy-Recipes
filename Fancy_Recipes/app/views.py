@@ -122,31 +122,31 @@ def create_ingredient(request):
 
 @login_required
 def edit_ingredient(request, ingredient_id):
+    ingredient = Ingredient.objects.get(id=ingredient_id)
     if request.method == "POST":
         form = EditIngredientForm(request.POST)
-        ingredient = Ingredient.objects.get(id = ingredient_id)
         if form.is_valid():
             if form.cleaned_data['name']:
-                ingredient.name = form.cleaned_data['name'].value()
+                ingredient.name = form.cleaned_data['name']
             if form.cleaned_data['carbohydrate']:
-                ingredient.carbohydrate = form.cleaned_data['carbohydrate'].value
+                ingredient.carbohydrate = form.cleaned_data['carbohydrate']
             if form.cleaned_data['energy']:
-                ingredient.energy = form.cleaned_data['energy'].value()
+                ingredient.energy = form.cleaned_data['energy']
             if form.cleaned_data['protein']:
-                ingredient.protein = form.cleaned_data['protein'].value()
+                ingredient.protein = form.cleaned_data['protein']
             if form.cleaned_data['fat']:
-                ingredient.fat = form.cleaned_data['fat'].value()
+                ingredient.fat = form.cleaned_data['fat']
             if form.cleaned_data['price']:
-                ingredient.price = form.cleaned_data['price'].value()
+                ingredient.price = form.cleaned_data['price']
             ingredient.save()
             messages.info(request, "Ingredient updated")
-            return redirect('.')
+            return redirect('ingredient-edit', ingredient_id)
         else:
             messages.error(request, "Cannot update chosen ingredient")
     else:
         form = EditIngredientForm()
 
-    return render(request, "editIngredienr.html", {"edit_ingredient_form" : form})
+    return render(request, "edit_ingredient.html", {"edit_ingredient_form" : form, "ingredient" : ingredient})
 
 
 def delete_ingredient(request):
@@ -271,18 +271,20 @@ def recipe_page(request, recipe_id):
 def add_comment(request, recipe_id):
     if request.method == "POST":
         user = User.objects.get(id=request.user.id)
-        comment = Comment(last_edited=datetime.now(), author=user, recipe=recipe_id)
+        commented_recipe = Recipe.objects.get(id=recipe_id)
+        comment = Comment(last_edited=datetime.now(), author=user, recipe=commented_recipe)
         form = CommentForm(request.POST, instance=comment)
 
         if (form.is_valid()):
-            comment.text = form.cleaned_data['text'].value()
+            comment.text = form.cleaned_data['text']
             comment.save()
             messages.info(request, "Comment added")
-            return redirect('.')
+            return redirect('add-comment', recipe_id)
+
     else:
         form = CommentForm()
 
-    return render(request, 'add_comment.html', {'form': form})
+    return render(request, 'add_comment.html', {'form': form, 'recipe_id' : recipe_id})
 
 
 @login_required
@@ -304,8 +306,19 @@ def comment_delete(request, comment_id):
 
 
 def list_users(request):
+    accounts = Account.objects.all()
+    comments = Comment.objects.all()
+    recipes = Recipe.objects.all()
+    num_of_comments = {}
+    num_of_recipes = {}
+    for account in accounts:
+        num_of_comments[account.pk] = comments.filter(author=account.pk).count()
+        num_of_recipes[account.pk] = recipes.filter(author=account.pk).count()
+    # print(num_of_comments.values())
+
+    print(num_of_comments)
     if (request.method == "GET"):
-        return render(request, 'users.html', {'users': Account.objects.all()})
+        return render(request, 'users.html', {'users': accounts, 'num_of_comments' : num_of_comments, 'num_of_recipes' : num_of_recipes })
 
 
 # Handling units

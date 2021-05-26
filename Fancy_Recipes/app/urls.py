@@ -16,12 +16,14 @@ urlpatterns = [
     path('ingredient/create/', views.create_ingredient, name='ingredient-create'),
     path('ingredient/delete/', views.delete_ingredient, name='ingredient-delete'),
     path('ingredient/list/', IngredientListView.as_view(), name='ingredient-list'),
+    path('ingredient/edit/<int:ingredient_id>', views.edit_ingredient, name='ingredient-edit'),
 
     path('recipe/add/', views.add_recipe, name='recipe-add'),
     path('recipe/list/', views.list_recipe, name='recipe-list'),
     path('recipe/edit/<int:recipe_id>', views.edit_recipe, name='recipe-edit'),
     path('recipe/delete/<int:recipe_id>', views.recipe_delete, name='recipe-delete'),
     path('recipe/<int:recipe_id>', views.recipe_page, name='recipe_page'),
+    path('recipe/addComment/<int:recipe_id>', views.add_comment, name='add-comment'),
 
     path('unit/add/', views.add_unit, name='add_unit'),
     path('unit/delete/', views.delete_unit, name='delete_unit'),
