@@ -9,7 +9,6 @@ from django.template import loader
 from django.views.generic import ListView
 from django.core.exceptions import ObjectDoesNotExist
 
-
 from .forms import (RegisterForm, ProfileUpdateForm, ProfileDeleteForm,
                     CreateIngredientForm, DeleteIngredientForm, RecipeForm, CommentForm, AddSolidUnitForm,
                     AddLiquidUnitForm, DeleteSolidUnitForm, DeleteLiquidUnitForm, EditLiquidUnitForm, EditSolidUnitForm,
@@ -96,12 +95,20 @@ def updateProfile(request):
 
 @login_required
 def deleteProfile(request):
-    template = loader.get_template('deleteProfile.html')
-    delete_form = ProfileDeleteForm()
-    context = {
-        'delete_form': delete_form
-    }
-    return HttpResponse(template.render(context, request))
+    current_user = User.objects.get(id=request.user.id)
+    if request.method == "POST":
+        form = ProfileDeleteForm(request.POST)
+        if form.is_valid():
+            account = Account.objects.get(user_id=current_user.id)
+            current_user.delete()
+            account.delete()
+            return redirect('register')
+        else:
+            messages.error(request, "Profile cannot be deleted, some problems occurred.")
+    else:
+        form = ProfileDeleteForm()
+
+    return render(request, "deleteProfile.html", {"delete_form": form})
 
 
 # Handling ingredients
@@ -146,7 +153,7 @@ def edit_ingredient(request, ingredient_id):
     else:
         form = EditIngredientForm()
 
-    return render(request, "edit_ingredient.html", {"edit_ingredient_form" : form, "ingredient" : ingredient})
+    return render(request, "edit_ingredient.html", {"edit_ingredient_form": form, "ingredient": ingredient})
 
 
 def delete_ingredient(request):
@@ -284,7 +291,7 @@ def add_comment(request, recipe_id):
     else:
         form = CommentForm()
 
-    return render(request, 'add_comment.html', {'form': form, 'recipe_id' : recipe_id})
+    return render(request, 'add_comment.html', {'form': form, 'recipe_id': recipe_id})
 
 
 @login_required
@@ -318,7 +325,8 @@ def list_users(request):
 
     print(num_of_comments)
     if (request.method == "GET"):
-        return render(request, 'users.html', {'users': accounts, 'num_of_comments' : num_of_comments, 'num_of_recipes' : num_of_recipes })
+        return render(request, 'users.html',
+                      {'users': accounts, 'num_of_comments': num_of_comments, 'num_of_recipes': num_of_recipes})
 
 
 # Handling units
@@ -444,11 +452,12 @@ def unit_calculator(request):
     solidUnits = SolidUnits.objects.all()
     for y in solidUnits:
         solid.append(y.unit)
-    context = {'liquid_units' : liquid,
-               'solid_units' : solid
+    context = {'liquid_units': liquid,
+               'solid_units': solid
                }
     if request.method == "GET":
         return render(request, 'unit_calculator.html', context)
+
 
 def calculate(request):
     result = UnitCalculator.convertHelper(request.GET["fromUnitName"], request.GET["toUnitName"], request.GET["amount"])
