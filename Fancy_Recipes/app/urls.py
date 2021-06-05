@@ -1,4 +1,5 @@
-from django.urls import path
+from django.urls import path, re_path
+from django.conf.urls import url, include
 from django.contrib.auth import views as auth_views
 from .views import IngredientListView
 from . import views
@@ -19,7 +20,9 @@ urlpatterns = [
     path('ingredient/edit/<int:ingredient_id>', views.edit_ingredient, name='ingredient-edit'),
 
     path('recipe/add/', views.add_recipe, name='recipe-add'),
-    path('recipe/list/', views.list_recipe, name='recipe-list'),
+    re_path(r'^recipe/list/$', views.list_recipe, name='recipe-list'),
+    re_path(r'^recipe/list/(?P<match>.+)/$', views.list_recipe, name='recipe-list-filter'),
+    
     path('recipe/edit/<int:recipe_id>', views.edit_recipe, name='recipe-edit'),
     path('recipe/delete/<int:recipe_id>', views.recipe_delete, name='recipe-delete'),
     path('recipe/<int:recipe_id>', views.recipe_page, name='recipe_page'),
@@ -30,4 +33,7 @@ urlpatterns = [
     path('unit/edit/', views.edit_unit, name='edit_unit'),
     path('unitCalculator/', views.unit_calculator, name='unit_calculator'),
     path('unitCalculator/calculate/', views.calculate, name='calculate'),
+
+    path('autocomplete/', views.autocompleteIngredients, name='autocomplete'),
+    path('filterrecipes/', views.filterRecipes, name='filterrecipes'),
 ]

@@ -3,7 +3,6 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from .models import Ingredient, Recipe, SolidUnits, LiquidUnits, Comment
 
-
 class RegisterForm(UserCreationForm):
     email = forms.EmailField()
 
@@ -108,8 +107,6 @@ class EditSolidUnitForm(forms.ModelForm):
     class Meta:
         model = SolidUnits
         fields = ["old_unit", "new_unit", "new_factor"]
-
-
 
 class EditIngredientForm(forms.ModelForm):
     name = forms.CharField(max_length=200, required=False)

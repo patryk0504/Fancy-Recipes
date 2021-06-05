@@ -14,6 +14,7 @@ from .forms import (RegisterForm, ProfileUpdateForm, ProfileDeleteForm,
                     CreateIngredientForm, DeleteIngredientForm, RecipeForm, CommentForm, AddSolidUnitForm,
                     AddLiquidUnitForm, DeleteSolidUnitForm, DeleteLiquidUnitForm, EditLiquidUnitForm, EditSolidUnitForm,
                     EditIngredientForm)
+
 from .models import Ingredient, Recipe, Account, Comment, LiquidUnits, SolidUnits
 from .utils import UnitCalculator
 
@@ -199,13 +200,6 @@ def add_recipe(request):
         form = RecipeForm()
 
     return render(request, 'add_recipe.html', {'form': form})
-
-
-@login_required
-def list_recipe(request):
-    if request.method == "GET":
-        return render(request, 'list_recipe.html', {'recipes': Recipe.objects.all()})
-
 
 @login_required
 def edit_recipe(request, recipe_id):
@@ -453,3 +447,48 @@ def unit_calculator(request):
 def calculate(request):
     result = UnitCalculator.convertHelper(request.GET["fromUnitName"], request.GET["toUnitName"], request.GET["amount"])
     return HttpResponse(result)
+
+from django.db.models import Count
+from django.http import JsonResponse
+from django.urls import reverse
+
+def autocompleteIngredients(request):
+    if 'term' in request.GET:
+        matched_ingredients = Ingredient.objects.filter(name__icontains=request.GET.get('term'))
+        ingredients = [ingredient.name for ingredient in matched_ingredients]
+        return JsonResponse(ingredients, safe=False)
+
+
+def filterRecipes(request):
+    if request.method == "POST":
+        ingredients_names = request.POST.getlist("content[]")
+        ingredients_list = [ Ingredient.objects.get(name = ingredient_name) for ingredient_name in ingredients_names ]
+        filtered_recipes = Recipe.objects.all().filter(ingredients__in = ingredients_list).annotate(ingredient_count = Count('ingredients')).filter(ingredient_count = len(ingredients_list) )
+        filtered_recipes_ids = [ str(recipe.id) for recipe in filtered_recipes ]
+        delimiter = ","
+        filtered_recipes_ids = delimiter.join(filtered_recipes_ids) 
+
+        result_url = reverse('recipe-list')
+        if filtered_recipes_ids != '':
+            result_url = reverse('recipe-list-filter',args = [filtered_recipes_ids])
+        elif len(ingredients_list) != 0:
+            result_url = reverse('recipe-list-filter',args = ["not_found"])
+        
+        return JsonResponse({
+                        'success': True,
+                        'url': result_url
+                    })
+
+
+@login_required
+def list_recipe(request, match = ''):
+    if request.method == "GET":
+        if match == 'not_found':
+            messages.info(request, "Recipes with specified ingredients are not found.")
+            return render(request, 'list_recipe.html')
+
+        recipes = Recipe.objects.all()
+        if match != '':
+            recipes_ids = [ int(recipe_id) for recipe_id in match.split(",")]
+            recipes = [recipe for recipe in recipes if recipe.id in recipes_ids]
+        return render(request, 'list_recipe.html', {'recipes': recipes})
