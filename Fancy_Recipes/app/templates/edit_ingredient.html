@@ -8,13 +8,13 @@
     <div class="container" style="margin-top: 1rem">
     <table>
     <tr>
-        <th>Id</th>
-        <th>Name</th>
-        <th>Price</th>
-        <th>Carbohydrate</th>
-        <th>Energy</th>
-        <th>Protein</th>
-        <th>Fat</th>
+        <th>ID</th>
+        <th>Nazwa</th>
+        <th>Cena</th>
+        <th>Węglowodany</th>
+        <th>Kalorie</th>
+        <th>Białko</th>
+        <th>Tłuszcze</th>
     </tr>
         <tr>
         <td>{{ ingredient.id }}</td>
@@ -29,8 +29,8 @@
     <form method="POST" class="form-group">
         {% csrf_token %}
         {{ edit_ingredient_form|crispy }}
-        <button type="button" class="btn btn-danger" onclick="location.href = '{% url 'ingredient-list' %}';">Back</button>
-        <button type="submit" class="btn btn-success">Edit Ingredient</button>
+        <button type="button" class="btn btn-danger" onclick="location.href = '{% url 'ingredient-list' %}';">Cofnij</button>
+        <button type="submit" class="btn btn-success">Edytuj składnik</button>
     </form>
         </div>
 {% endblock %}

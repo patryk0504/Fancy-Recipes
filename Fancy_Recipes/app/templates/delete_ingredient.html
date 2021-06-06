@@ -2,12 +2,11 @@
 {% load crispy_forms_tags %}
 
 {% block body %}
+    <h1 style="text-align: center">Czy na pewno chcesz usunąć ten składnik?</h1>
     <form method="POST" class="form-group">
         {% csrf_token %}
-        <label for="name">Ingredient name:</label><br>
-        <input type="text" id="name" name="name"><br>
-        <label for="price">Ingredient price:</label><br>
-        <input type="text" id="price" name="price"><br>
+        <a class="btn btn-primary-custom" style="float:right;"
+               href="{% url 'ingredient-list' %}">Cancel</a>
         <button type="submit" class="btn btn-success">Delete Ingredient</button>
     </form>
 {% endblock %}

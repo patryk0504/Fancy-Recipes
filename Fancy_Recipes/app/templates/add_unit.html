@@ -6,20 +6,20 @@
 
     <link rel="stylesheet" type="text/css" href="{% static 'css/units_form.css' %}">
     <div class="flex-container">
-        <div>
-            <h3>Add Solid Unit</h3>
+        <div style="text-align: center">
+            <h3>Jednostka stała</h3>
             <form method="POST" class="form-group">
                 {% csrf_token %}
                 {{ form1|crispy }}
-                <button type="submit" name="add_solid" class="btn btn-success">Add</button>
+                <button type="submit" name="add_solid" class="btn btn-success">Dodaj</button>
             </form>
         </div>
-         <div>
-            <h3>Add Liquid Unit</h3>
+        <div style="text-align: center">
+            <h3>Jednostka płynna</h3>
             <form method="POST" class="form-group">
                 {% csrf_token %}
                 {{ form2|crispy }}
-                <button type="submit" name="add_liquid" class="btn btn-success">Add</button>
+                <button type="submit" name="add_liquid" class="btn btn-success">Dodaj</button>
             </form>
         </div>
     </div>
