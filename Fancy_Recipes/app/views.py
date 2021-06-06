@@ -3,22 +3,17 @@ from datetime import datetime
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.template import loader
 from django.views.generic import ListView
-from django.core.exceptions import ObjectDoesNotExist
 
 from .forms import (RegisterForm, ProfileUpdateForm, ProfileDeleteForm,
-                    CreateIngredientForm, DeleteIngredientForm, RecipeForm, CommentForm, AddSolidUnitForm,
-                    AddLiquidUnitForm, DeleteSolidUnitForm, DeleteLiquidUnitForm, EditLiquidUnitForm, EditSolidUnitForm,
-                    EditIngredientForm)
-
+                    CreateIngredientForm, RecipeForm, CommentForm, AddSolidUnitForm,
+                    AddLiquidUnitForm, EditIngredientForm)
 from .models import Ingredient, Recipe, Account, Comment, LiquidUnits, SolidUnits
 from .utils import UnitCalculator
-
-from datetime import datetime
-from django.contrib.auth.models import User
 
 
 def index(request):

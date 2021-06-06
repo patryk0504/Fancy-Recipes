@@ -39,9 +39,9 @@
            width="100%">
         <thead class="txt-txt">
         <tr>
-            <th scope="col">Name</th>
-            <th scope="col">Added</th>
-            <th scope="col">Author</th>
+            <th scope="col">Nazwa</th>
+            <th scope="col">Data dodania</th>
+            <th scope="col">Autor</th>
         </tr>
     </thead>
         <tbody class="txt-txt">
@@ -49,7 +49,7 @@
         <tr id="row" class='clickable-row' onclick="window.location='{% url 'recipe_page' recipe_id=recipe.id %}'" style="cursor: pointer">
             <td>{{ recipe.name }}</td>
             <td>{{ recipe.add_date }}</td>
-            <td> {{ recipe.author }} </td>
+            <td>{{ recipe.author }}</td>
         </tr>
         {% endfor %}
     </tbody>

@@ -2,6 +2,7 @@
 {% load crispy_forms_tags %}
 
 {% block body %}
+    <h1 style="text-align: center">Czy na pewno chcesz usunąć ten składnik?</h1>
     <form method="POST" class="form-group">
         {% csrf_token %}
         <a class="btn btn-primary-custom" style="float:right;"

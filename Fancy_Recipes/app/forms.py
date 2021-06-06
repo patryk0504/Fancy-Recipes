@@ -1,7 +1,9 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
+
 from .models import Ingredient, Recipe, SolidUnits, LiquidUnits, Comment
+
 
 class RegisterForm(UserCreationForm):
     email = forms.EmailField()
@@ -12,11 +14,11 @@ class RegisterForm(UserCreationForm):
 
 
 class ProfileUpdateForm(forms.ModelForm):
-    last_name = forms.CharField(required=False, max_length=150)
-    first_name = forms.CharField(required=False, max_length=150)
-    username = forms.CharField(required=False, max_length=150)
+    last_name = forms.CharField(required=False, max_length=150, label="Nazwisko")
+    first_name = forms.CharField(required=False, max_length=150, label="Imie")
+    username = forms.CharField(required=False, max_length=150, label="Nazwa użytkownika")
     email = forms.EmailField(required=False, max_length=254)
-    about = forms.CharField(widget=forms.Textarea, help_text='400 characters max.', max_length=400, required=False)
+    about = forms.CharField(widget=forms.Textarea, help_text='400 characters max.', max_length=400, required=False, label="O mnie")
 
     class Meta:
         model = User
@@ -33,14 +35,13 @@ class CreateIngredientForm(forms.ModelForm):
     class Meta:
         model = Ingredient
         fields = ["name", "price"]
-        labels = {"name":"nazwa składnika","price":"cena"}
+        labels = {"name": "nazwa składnika", "price": "cena"}
 
 
 class DeleteIngredientForm(forms.ModelForm):
     class Meta:
         model = Ingredient
-        fields = ["name", "price"]
-        labels = {"name": "nazwa składnika", "price": "cena"}
+        fields = []
 
 
 class RecipeForm(forms.ModelForm):
@@ -48,7 +49,7 @@ class RecipeForm(forms.ModelForm):
         model = Recipe
         fields = ["name", "description", "add_date", "author", "ingredients"]
         exclude = ["author", "add_date"]
-        labels = {"name": "nazwa przepisu", "description":"opis","ingredients":"składniki"}
+        labels = {"name": "nazwa przepisu", "description": "opis", "ingredients": "składniki"}
 
 
 class CommentForm(forms.ModelForm):
@@ -60,8 +61,8 @@ class CommentForm(forms.ModelForm):
 
 
 class AddSolidUnitForm(forms.ModelForm):
-    conversionFactorToMainUnit = forms.FloatField(required=True, min_value=0.0)
-    unit = forms.CharField(max_length=10, required=True)
+    conversionFactorToMainUnit = forms.FloatField(required=True, min_value=0.0, label="Współczynnik konwersji")
+    unit = forms.CharField(max_length=10, required=True, label="Jednostka")
 
     class Meta:
         model = SolidUnits
@@ -69,56 +70,21 @@ class AddSolidUnitForm(forms.ModelForm):
 
 
 class AddLiquidUnitForm(forms.ModelForm):
-    conversionFactorToMainUnit = forms.FloatField(required=True, min_value=0.0)
-    unit = forms.CharField(max_length=10, required=True)
+    conversionFactorToMainUnit = forms.FloatField(required=True, min_value=0.0, label="Współczynnik konwersji")
+    unit = forms.CharField(max_length=10, required=True, label="Jednostka")
 
     class Meta:
         model = LiquidUnits
         fields = ["unit", "conversionFactorToMainUnit"]
 
 
-class DeleteLiquidUnitForm(forms.ModelForm):
-    unit = forms.CharField(max_length=10, required=True)
-
-    class Meta:
-        model = LiquidUnits
-        fields = ["unit"]
-
-
-class DeleteSolidUnitForm(forms.ModelForm):
-    unit = forms.CharField(max_length=10, required=True)
-
-    class Meta:
-        model = SolidUnits
-        fields = ["unit"]
-
-
-class EditLiquidUnitForm(forms.ModelForm):
-    old_unit = forms.CharField(max_length=10, required=True)
-    new_unit = forms.CharField(max_length=10, required=True)
-    new_factor = forms.FloatField(required=True, min_value=0.0)
-
-    class Meta:
-        model = LiquidUnits
-        fields = ["old_unit", "new_unit", "new_factor"]
-
-
-class EditSolidUnitForm(forms.ModelForm):
-    old_unit = forms.CharField(max_length=10, required=True)
-    new_unit = forms.CharField(max_length=10, required=True)
-    new_factor = forms.FloatField(required=True, min_value=0.0)
-
-    class Meta:
-        model = SolidUnits
-        fields = ["old_unit", "new_unit", "new_factor"]
-
 class EditIngredientForm(forms.ModelForm):
-    name = forms.CharField(max_length=200, required=False)
-    carbohydrate = forms.FloatField(required=False)
-    energy = forms.FloatField(required=False)
-    protein = forms.FloatField(required=False)
-    fat = forms.FloatField(required=False)
-    price = forms.DecimalField(required=False)
+    name = forms.CharField(max_length=200, required=False, label="Nazwa")
+    carbohydrate = forms.FloatField(required=False, label="Węglowodany")
+    energy = forms.FloatField(required=False, label="Kalorie")
+    protein = forms.FloatField(required=False, label="Białko")
+    fat = forms.FloatField(required=False, label="Tłuszcze")
+    price = forms.DecimalField(required=False, label="Cena")
 
     class Meta:
         model = Ingredient
