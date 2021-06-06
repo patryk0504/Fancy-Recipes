@@ -33,12 +33,14 @@ class CreateIngredientForm(forms.ModelForm):
     class Meta:
         model = Ingredient
         fields = ["name", "price"]
+        labels = {"name":"nazwa składnika","price":"cena"}
 
 
 class DeleteIngredientForm(forms.ModelForm):
     class Meta:
         model = Ingredient
         fields = ["name", "price"]
+        labels = {"name": "nazwa składnika", "price": "cena"}
 
 
 class RecipeForm(forms.ModelForm):
@@ -46,12 +48,14 @@ class RecipeForm(forms.ModelForm):
         model = Recipe
         fields = ["name", "description", "add_date", "author", "ingredients"]
         exclude = ["author", "add_date"]
+        labels = {"name": "nazwa przepisu", "description":"opis","ingredients":"składniki"}
 
 
 class CommentForm(forms.ModelForm):
     class Meta:
         model = Comment
         fields = ["text"]
+        labels = ["treść komentarza"]
         exclude = ["author", "last_edited", "recipe"]
 
 

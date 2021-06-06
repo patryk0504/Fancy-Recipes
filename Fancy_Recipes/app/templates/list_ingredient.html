@@ -13,12 +13,13 @@
         <th>Option</th>
     </tr>
     {% for ingredient in ingredients %}
-        <tr>
         <td>{{ ingredient.id }}</td>
         <td>{{ ingredient.name }}</td>
         <td> {{ ingredient.price }}$</td>
         <td><button type="button" class="btn btn-secondary" onclick="window.location='{% url 'ingredient-edit' ingredient_id=ingredient.id %}'">Edit</button></td>
-    </tr>
+        <td>
+            <button type="button" class="btn btn-secondary" onclick="window.location='{% url 'ingredient-delete' ingredient_id=ingredient.id %}'">Delete</button></td>
+        </tr>
     {% endfor %}
 </table>
 {% endblock %}

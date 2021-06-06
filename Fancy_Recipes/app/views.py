@@ -9,7 +9,6 @@ from django.template import loader
 from django.views.generic import ListView
 from django.core.exceptions import ObjectDoesNotExist
 
-
 from .forms import (RegisterForm, ProfileUpdateForm, ProfileDeleteForm,
                     CreateIngredientForm, DeleteIngredientForm, RecipeForm, CommentForm, AddSolidUnitForm,
                     AddLiquidUnitForm, DeleteSolidUnitForm, DeleteLiquidUnitForm, EditLiquidUnitForm, EditSolidUnitForm,
@@ -51,6 +50,13 @@ def profile(request):
     template = loader.get_template('profile.html')
     current_user = User.objects.get(id=request.user.id)
     account = Account.objects.get(user_id=current_user.id)
+
+    comments = Comment.objects.all()
+    recipes = Recipe.objects.all()
+
+    num_of_comments = comments.filter(author=current_user).count()
+    num_of_recipes = recipes.filter(author=current_user).count()
+
     context = {
         'role': account.role,
         'join_date': current_user.date_joined,
@@ -58,9 +64,8 @@ def profile(request):
         'last_name': current_user.last_name,
         'job': account.job,
         'about_me': account.description,
-        'stats': {'recipes_num': 10,
-                  'comments_num': 20,
-                  'likes': 30
+        'stats': {'recipes_num': num_of_recipes,
+                  'comments_num': num_of_comments,
                   },
     }
     return HttpResponse(template.render(context, request))
@@ -147,28 +152,16 @@ def edit_ingredient(request, ingredient_id):
     else:
         form = EditIngredientForm()
 
-    return render(request, "edit_ingredient.html", {"edit_ingredient_form" : form, "ingredient" : ingredient})
+    return render(request, "edit_ingredient.html", {"edit_ingredient_form": form, "ingredient": ingredient})
 
 
-def delete_ingredient(request):
+def delete_ingredient(request, ingredient_id):
     if request.method == "POST":
-        form = DeleteIngredientForm(request.POST)
+        ingredient = Ingredient.objects.get(id=ingredient_id)
+        ingredient.delete()
+        return redirect('ingredient-list')
 
-        get_name = request.POST.get('name')
-        get_price = request.POST.get('price')
-        records_to_delete = Ingredient.objects.filter(name=get_name, price=get_price)
-
-        # form musi byc poprawny i musi istniec skladnik w bazie do usuniecia - inaczej error
-        if form.is_valid() and len(list(records_to_delete)) > 0:
-            records_to_delete.delete()
-            messages.info(request, "Ingredient successfully deleted from the database.")
-            return redirect('.')
-        else:
-            messages.error(request, "Ingredient cannot be deleted from the database, some problems occurred.")
-    else:
-        form = DeleteIngredientForm()
-
-    return render(request, "delete_ingredient.html", {"form": form})
+    return render(request, "delete_ingredient.html")
 
 
 def list_ingredients(request):
@@ -200,6 +193,7 @@ def add_recipe(request):
         form = RecipeForm()
 
     return render(request, 'add_recipe.html', {'form': form})
+
 
 @login_required
 def edit_recipe(request, recipe_id):
@@ -278,7 +272,7 @@ def add_comment(request, recipe_id):
     else:
         form = CommentForm()
 
-    return render(request, 'add_comment.html', {'form': form, 'recipe_id' : recipe_id})
+    return render(request, 'add_comment.html', {'form': form, 'recipe_id': recipe_id})
 
 
 @login_required
@@ -312,7 +306,8 @@ def list_users(request):
 
     print(num_of_comments)
     if (request.method == "GET"):
-        return render(request, 'users.html', {'users': accounts, 'num_of_comments' : num_of_comments, 'num_of_recipes' : num_of_recipes })
+        return render(request, 'users.html',
+                      {'users': accounts, 'num_of_comments': num_of_comments, 'num_of_recipes': num_of_recipes})
 
 
 # Handling units
@@ -349,86 +344,6 @@ def add_unit(request):
     return render(request, "add_unit.html", {"form1": form1, "form2": form2})
 
 
-def delete_unit(request):
-    if request.method == "POST":
-        if 'delete_liquid' in request.POST:
-            form1 = DeleteLiquidUnitForm(request.POST)
-            if form1.is_valid():
-                get_unit = ''
-                if form1.cleaned_data['unit']:
-                    get_unit = form1['unit'].value()
-                record_to_delete = LiquidUnits.objects.filter(unit=get_unit)
-                if record_to_delete:
-                    record_to_delete.delete()
-                    messages.info(request, "Liquid unit successfully deleted from the database.")
-                else:
-                    messages.info(request, f"Liquid unit: '{get_unit}' is not present in the database.")
-                return redirect('.')
-            else:
-                messages.error(request, "Liquid unit cannot be deleted, some problems occurred.")
-        elif 'delete_solid' in request.POST:
-            form2 = DeleteSolidUnitForm(request.POST)
-            if form2.is_valid():
-                get_unit = ''
-                if form2.cleaned_data['unit']:
-                    get_unit = form2['unit'].value()
-                record_to_delete = SolidUnits.objects.filter(unit=get_unit)
-                if record_to_delete:
-                    record_to_delete.delete()
-                    messages.info(request, "Solid unit successfully deleted from the database.")
-                else:
-                    messages.info(request, f"Solid unit: '{get_unit}' is not present in the database.")
-                return redirect('.')
-            else:
-                messages.error(request, "Solid unit cannot be deleted, some problems occurred.")
-    else:
-        form1 = DeleteLiquidUnitForm()
-        form2 = DeleteSolidUnitForm()
-
-    return render(request, "delete_unit.html", {"form1": form1, "form2": form2})
-
-
-def edit_unit(request):
-    if request.method == "POST":
-        if 'edit_liquid' in request.POST:
-            form1 = EditLiquidUnitForm(request.POST)
-            if form1.is_valid():
-                get_unit = ''
-                if form1.cleaned_data['old_unit']:
-                    get_unit = form1['old_unit'].value()
-                record_to_edit = LiquidUnits.objects.filter(unit=get_unit)
-                if record_to_edit:
-                    record_to_edit.update(unit=form1.cleaned_data['new_unit'],
-                                          conversionFactorToMainUnit=form1.cleaned_data['new_factor'])
-                    messages.info(request, "Liquid unit successfully updated.")
-                else:
-                    messages.info(request, f"Liquid unit: '{get_unit}' is not present in the database.")
-                return redirect('.')
-            else:
-                messages.error(request, "Liquid unit cannot be updated, some problems occurred.")
-        elif 'edit_solid' in request.POST:
-            form2 = EditSolidUnitForm(request.POST)
-            if form2.is_valid():
-                get_unit = ''
-                if form2.cleaned_data['old_unit']:
-                    get_unit = form2['old_unit'].value()
-                record_to_edit = SolidUnits.objects.filter(unit=get_unit)
-                if record_to_edit:
-                    record_to_edit.update(unit=form2.cleaned_data['new_unit'],
-                                          conversionFactorToMainUnit=form2.cleaned_data['new_factor'])
-                    messages.info(request, "Solid unit successfully updated.")
-                else:
-                    messages.info(request, f"Solid unit: '{get_unit}' is not present in the database.")
-                return redirect('.')
-            else:
-                messages.error(request, "Solid unit cannot be updated, some problems occurred.")
-    else:
-        form1 = EditLiquidUnitForm()
-        form2 = EditSolidUnitForm()
-
-    return render(request, "edit_unit.html", {"form1": form1, "form2": form2})
-
-
 def unit_calculator(request):
     liquid = []
     liquidUnits = LiquidUnits.objects.all()
@@ -438,19 +353,22 @@ def unit_calculator(request):
     solidUnits = SolidUnits.objects.all()
     for y in solidUnits:
         solid.append(y.unit)
-    context = {'liquid_units' : liquid,
-               'solid_units' : solid
+    context = {'liquid_units': liquid,
+               'solid_units': solid
                }
     if request.method == "GET":
         return render(request, 'unit_calculator.html', context)
+
 
 def calculate(request):
     result = UnitCalculator.convertHelper(request.GET["fromUnitName"], request.GET["toUnitName"], request.GET["amount"])
     return HttpResponse(result)
 
+
 from django.db.models import Count
 from django.http import JsonResponse
 from django.urls import reverse
+
 
 def autocompleteIngredients(request):
     if 'term' in request.GET:
@@ -462,26 +380,27 @@ def autocompleteIngredients(request):
 def filterRecipes(request):
     if request.method == "POST":
         ingredients_names = request.POST.getlist("content[]")
-        ingredients_list = [ Ingredient.objects.get(name = ingredient_name) for ingredient_name in ingredients_names ]
-        filtered_recipes = Recipe.objects.all().filter(ingredients__in = ingredients_list).annotate(ingredient_count = Count('ingredients')).filter(ingredient_count = len(ingredients_list) )
-        filtered_recipes_ids = [ str(recipe.id) for recipe in filtered_recipes ]
+        ingredients_list = [Ingredient.objects.get(name=ingredient_name) for ingredient_name in ingredients_names]
+        filtered_recipes = Recipe.objects.all().filter(ingredients__in=ingredients_list).annotate(
+            ingredient_count=Count('ingredients')).filter(ingredient_count=len(ingredients_list))
+        filtered_recipes_ids = [str(recipe.id) for recipe in filtered_recipes]
         delimiter = ","
-        filtered_recipes_ids = delimiter.join(filtered_recipes_ids) 
+        filtered_recipes_ids = delimiter.join(filtered_recipes_ids)
 
         result_url = reverse('recipe-list')
         if filtered_recipes_ids != '':
-            result_url = reverse('recipe-list-filter',args = [filtered_recipes_ids])
+            result_url = reverse('recipe-list-filter', args=[filtered_recipes_ids])
         elif len(ingredients_list) != 0:
-            result_url = reverse('recipe-list-filter',args = ["not_found"])
-        
+            result_url = reverse('recipe-list-filter', args=["not_found"])
+
         return JsonResponse({
-                        'success': True,
-                        'url': result_url
-                    })
+            'success': True,
+            'url': result_url
+        })
 
 
 @login_required
-def list_recipe(request, match = ''):
+def list_recipe(request, match=''):
     if request.method == "GET":
         if match == 'not_found':
             messages.info(request, "Recipes with specified ingredients are not found.")
@@ -489,6 +408,14 @@ def list_recipe(request, match = ''):
 
         recipes = Recipe.objects.all()
         if match != '':
-            recipes_ids = [ int(recipe_id) for recipe_id in match.split(",")]
+            recipes_ids = [int(recipe_id) for recipe_id in match.split(",")]
             recipes = [recipe for recipe in recipes if recipe.id in recipes_ids]
         return render(request, 'list_recipe.html', {'recipes': recipes})
+
+
+@login_required
+def user_recipes(request):
+    current_user = User.objects.get(id=request.user.id)
+    recipes = Recipe.objects.filter(author=current_user)
+    recipes = [recipe for recipe in recipes]
+    return render(request, 'user_recipes.html', {'recipes': recipes})
