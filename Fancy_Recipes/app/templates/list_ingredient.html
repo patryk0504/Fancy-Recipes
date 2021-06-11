@@ -7,17 +7,18 @@
 <link rel="stylesheet" type="text/css" href="{% static 'css/ingredient_list.css' %}">
 <table>
     <tr>
-        <th>Id</th>
-        <th>Name</th>
-        <th>Price</th>
-        <th>Option</th>
+        <th>ID</th>
+        <th>Nazwa</th>
+        <th>Cena</th>
+        <th colspan="2" style="text-align: center">Opcje</th>
     </tr>
     {% for ingredient in ingredients %}
-        <tr>
         <td>{{ ingredient.id }}</td>
         <td>{{ ingredient.name }}</td>
         <td> {{ ingredient.price }}$</td>
-        <td><button type="button" class="btn btn-secondary" onclick="window.location='{% url 'ingredient-edit' ingredient_id=ingredient.id %}'">Edit</button></td>
+        <td><button type="button" class="btn btn-secondary" onclick="window.location='{% url 'ingredient-edit' ingredient_id=ingredient.id %}'">Edytuj</button></td>
+        <td>
+            <button type="button" class="btn btn-secondary" onclick="window.location='{% url 'ingredient-delete' ingredient_id=ingredient.id %}'">Usuń</button></td>
     </tr>
     {% endfor %}
 </table>
