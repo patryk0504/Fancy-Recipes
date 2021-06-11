@@ -9,6 +9,9 @@ from django.shortcuts import render, redirect
 from django.template import loader
 from django.views.generic import ListView
 
+from django.core.exceptions import ObjectDoesNotExist
+
+
 from .forms import (RegisterForm, ProfileUpdateForm, ProfileDeleteForm,
                     CreateIngredientForm, RecipeForm, CommentForm, AddSolidUnitForm,
                     AddLiquidUnitForm, EditIngredientForm)
@@ -97,12 +100,20 @@ def updateProfile(request):
 
 @login_required
 def deleteProfile(request):
-    template = loader.get_template('deleteProfile.html')
-    delete_form = ProfileDeleteForm()
-    context = {
-        'delete_form': delete_form
-    }
-    return HttpResponse(template.render(context, request))
+    current_user = User.objects.get(id=request.user.id)
+    if request.method == "POST":
+        form = ProfileDeleteForm(request.POST)
+        if form.is_valid():
+            account = Account.objects.get(user_id=current_user.id)
+            current_user.delete()
+            account.delete()
+            return redirect('register')
+        else:
+            messages.error(request, "Profile cannot be deleted, some problems occurred.")
+    else:
+        form = ProfileDeleteForm()
+
+    return render(request, "deleteProfile.html", {"delete_form": form})
 
 
 # Handling ingredients
@@ -358,6 +369,7 @@ def unit_calculator(request):
 def calculate(request):
     result = UnitCalculator.convertHelper(request.GET["fromUnitName"], request.GET["toUnitName"], request.GET["amount"])
     return HttpResponse(result)
+
 
 
 from django.db.models import Count
