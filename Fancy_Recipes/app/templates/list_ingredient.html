@@ -5,6 +5,7 @@
 {% load static %}
 
 <link rel="stylesheet" type="text/css" href="{% static 'css/ingredient_list.css' %}">
+<h2 style="text-align: center">Lista składników</h2>
 <table>
     <tr>
         <th>ID</th>
@@ -15,10 +16,10 @@
     {% for ingredient in ingredients %}
         <td>{{ ingredient.id }}</td>
         <td>{{ ingredient.name }}</td>
-        <td> {{ ingredient.price }}$</td>
+        <td>{{ ingredient.price }}$</td>
         <td><button type="button" class="btn btn-secondary" onclick="window.location='{% url 'ingredient-edit' ingredient_id=ingredient.id %}'">Edytuj</button></td>
         <td>
-            <button type="button" class="btn btn-secondary" onclick="window.location='{% url 'ingredient-delete' ingredient_id=ingredient.id %}'">Usuń</button></td>
+            <button type="button" class="btn btn-secondary" id='{{ ingredient.name }}_Delete_Button' onclick="window.location='{% url 'ingredient-delete' ingredient_id=ingredient.id %}'">Usuń</button></td>
     </tr>
     {% endfor %}
 </table>

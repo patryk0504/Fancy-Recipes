@@ -44,7 +44,7 @@
     </thead>
         <tbody class="txt-txt">
         {% for recipe in recipes %}
-        <tr id="row" class='clickable-row' onclick="window.location='{% url 'recipe_page' recipe_id=recipe.id %}'" style="cursor: pointer">
+        <tr id={{ recipe.name }}  class='clickable-row' onclick="window.location='{% url 'recipe_page' recipe_id=recipe.id %}'" style="cursor: pointer">
             <td>{{ recipe.name }}</td>
             <td>{{ recipe.add_date }}</td>
             <td> {{ recipe.author }} </td>
