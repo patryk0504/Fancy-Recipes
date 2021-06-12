@@ -7,15 +7,15 @@ from .forms import RecipeForm, RegisterForm
 class AddRecipeFormTest(ut.TestCase):
     def test_Name_Field_Label(self):
         form = RecipeForm()
-        self.assertTrue(form.fields['name'].label is None or form.fields['name'].label == 'Name')
+        self.assertTrue(form.fields['name'].label is None or form.fields['name'].label == 'nazwa przepisu')
 
     def test_Description_Field_Label(self):
         form = RecipeForm()
-        self.assertTrue(form.fields['description'].label is None or form.fields['description'].label == 'Description')
+        self.assertTrue(form.fields['description'].label is None or form.fields['description'].label == 'opis')
 
     def test_Ingredients_Field_Label(self):
         form = RecipeForm()
-        self.assertTrue(form.fields['ingredients'].label is None or form.fields['ingredients'].label == 'Ingredients')
+        self.assertTrue(form.fields['ingredients'].label is None or form.fields['ingredients'].label == 'składniki')
 
     def test_AddDate_Field_Label_Should_Be_Excluded(self):
         form = RecipeForm()
