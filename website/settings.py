@@ -1,7 +1,12 @@
 from pathlib import Path
+import os
 
 BASE_DIR = Path(__file__).resolve().parent.parent
-
+STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
+STATIC_URL = '/static/'
+STATICFILES_DIRS = (
+('app', os.path.join(BASE_DIR, 'app', 'static')),
+)
 SECRET_KEY = '_ggmc+yp7s3tu56vtue6)tq#$v55l2f&4^eqay!k4!k&b=(4)h'
 
 DEBUG = True
@@ -98,8 +103,6 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
-
-STATIC_URL = '/static/'
 
 CRISPY_TEMPLATE_PACK = "bootstrap4"
 
