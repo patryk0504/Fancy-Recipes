@@ -2,11 +2,13 @@ from pathlib import Path
 import os
 
 BASE_DIR = Path(__file__).resolve().parent.parent
-STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
-STATIC_URL = '/static/'
-STATICFILES_DIRS = (
-('app', os.path.join(BASE_DIR, 'app', 'static')),
-)
+
+STATIC_URL = os.environ.get("DJANGO_STATIC_URL", "/static/")
+STATIC_ROOT = os.environ.get("DJANGO_STATIC_ROOT", "./static/") 
+
+STATICFILES_STORAGE = ('whitenoise.storage.CompressedManifestStaticFilesStorage')
+
+
 SECRET_KEY = '_ggmc+yp7s3tu56vtue6)tq#$v55l2f&4^eqay!k4!k&b=(4)h'
 
 DEBUG = True
@@ -15,6 +17,7 @@ ALLOWED_HOSTS = ['*']
 
 
 INSTALLED_APPS = [
+    "whitenoise.runserver_nostatic",
     'app.apps.AppConfig',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -27,6 +30,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
